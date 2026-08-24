@@ -1,0 +1,498 @@
+/* Thèmes additionnels — variantes ludiques activées via l'attribut data-theme
+   sur <html> (voir ThemeSwitcher.tsx). Chaque bloc redéfinit les jetons de
+   variables.css ; le reste de l'appli (base.css) n'a pas besoin de savoir
+   quel thème est actif. Quelques règles supplémentaires ajoutent les
+   fioritures propres à chaque thème (néons, cadre chromé, rail en bois, etc.).
+   Pas tous "casino" malgré le nom historique du fichier — Bubble gum et
+   Naturel n'ont rien à voir avec un casino. */
+
+/* ---------------------------------------------------------------------- */
+/* Vegas néon                                                              */
+/* ---------------------------------------------------------------------- */
+:root[data-theme='vegas'] {
+  --paper: #0b0713;
+  --paper-2: #170b23;
+  --ink: #ede7f6;
+  --ink-soft: #9c8fb5;
+  --gold: #ffd23f;
+  --gold-soft: #ffe18a;
+  --forest: #ff2daf;
+  --forest-2: #d6199a;
+  --rust: #ff5d5d;
+  --moss: #23e5db;
+  --line: #3a2c52;
+  --card: #150c22;
+  --shadow: 0 0 0 1px rgba(255, 45, 175, 0.25), 0 0 28px rgba(255, 45, 175, 0.15);
+  --on-accent: #ffffff;
+
+  --tag-a-bg: rgba(255, 210, 63, 0.16);
+  --tag-a-fg: #ffd23f;
+  --tag-b-bg: rgba(35, 229, 219, 0.16);
+  --tag-b-fg: #23e5db;
+  --tint: rgba(255, 45, 175, 0.08);
+  --hover-bg: #1f1330;
+  --dragover-bg: rgba(255, 210, 63, 0.1);
+  --overlay: rgba(5, 2, 10, 0.75);
+
+  --font-heading: 'Bungee', cursive;
+  --font-mono: 'Orbitron', var(--font-heading), monospace;
+  --heading-transform: uppercase;
+  --heading-tracking: 0.5px;
+
+  --radius-pill: 24px;
+  --panel-radius: 0 12px 12px 12px;
+}
+
+:root[data-theme='vegas'] body {
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(circle at 15% -10%, rgba(255, 45, 175, 0.22), transparent 45%),
+    radial-gradient(circle at 90% 0%, rgba(35, 229, 219, 0.16), transparent 40%);
+  background-attachment: fixed;
+}
+
+:root[data-theme='vegas'] nav.tabs button,
+:root[data-theme='vegas'] .ctx-btn,
+:root[data-theme='vegas'] .btn {
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+:root[data-theme='vegas'] header.top {
+  border-bottom-width: 2px;
+  box-shadow: 0 1px 12px rgba(255, 45, 175, 0.35);
+}
+
+:root[data-theme='vegas'] header.top {
+  padding-top: 20px;
+  background-image: radial-gradient(circle, var(--gold) 2.5px, transparent 2.5px);
+  background-repeat: repeat-x;
+  background-position: top left;
+  background-size: 18px 8px;
+}
+
+:root[data-theme='vegas'] nav.tabs button.active {
+  box-shadow: 0 0 12px rgba(255, 45, 175, 0.35), 0 -2px 0 var(--forest) inset;
+}
+
+:root[data-theme='vegas'] .reserve-box {
+  box-shadow: 0 0 22px rgba(255, 210, 63, 0.2) inset;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Casino royal                                                            */
+/* ---------------------------------------------------------------------- */
+:root[data-theme='royal'] {
+  --paper: #2a0e14;
+  --paper-2: #3b141c;
+  --ink: #f3e9d2;
+  --ink-soft: #b79a7a;
+  --gold: #d4af37;
+  --gold-soft: #e9cb6b;
+  --forest: #c9a227;
+  --forest-2: #b08a1e;
+  --rust: #b5502e;
+  --moss: #4c7a5e;
+  --line: #5a3a3f;
+  --card: #0f3d2e;
+  --shadow: inset 0 0 0 1px var(--gold-soft), 0 4px 24px rgba(0, 0, 0, 0.35);
+  --on-accent: #2a0e14;
+
+  --tag-a-bg: rgba(212, 175, 55, 0.18);
+  --tag-a-fg: #d4af37;
+  --tag-b-bg: rgba(76, 122, 94, 0.3);
+  --tag-b-fg: #a9d4b8;
+  --tint: rgba(212, 175, 55, 0.07);
+  --hover-bg: #452029;
+  --dragover-bg: rgba(212, 175, 55, 0.1);
+  --overlay: rgba(10, 4, 6, 0.65);
+
+  --font-heading: 'Playfair Display', serif;
+  --heading-transform: none;
+  --heading-tracking: 0.2px;
+
+  --radius-lg: 4px;
+  --radius-md: 3px;
+  --radius-xl: 4px;
+  --radius-pill: 3px;
+  --radius-tab: 0 0 0 0;
+  --panel-radius: 4px;
+}
+
+:root[data-theme='royal'] body {
+  background-color: var(--paper);
+  background-image: radial-gradient(ellipse at 50% -10%, rgba(201, 162, 39, 0.12), transparent 55%);
+  background-attachment: fixed;
+}
+
+:root[data-theme='royal'] nav.tabs button,
+:root[data-theme='royal'] .ctx-btn,
+:root[data-theme='royal'] .btn {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+:root[data-theme='royal'] nav.tabs button {
+  border: none;
+  background: transparent;
+  top: 0;
+}
+
+:root[data-theme='royal'] nav.tabs button.active {
+  border-bottom: 1.5px solid var(--gold);
+  box-shadow: none;
+}
+
+:root[data-theme='royal'] h2.panel-title::before,
+:root[data-theme='royal'] .detail-title::before {
+  content: '\25C6';
+  margin-right: 8px;
+  font-size: 0.7em;
+  vertical-align: middle;
+  color: var(--gold);
+}
+
+:root[data-theme='royal'] header.top h1 span {
+  font-style: italic;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Machine à sous                                                          */
+/* ---------------------------------------------------------------------- */
+:root[data-theme='slots'] {
+  --paper: #faf6ec;
+  --paper-2: #f0eada;
+  --ink: #1a1a1a;
+  --ink-soft: #6b5a4a;
+  --gold: #ffc94d;
+  --gold-soft: #ffd98a;
+  --forest: #c81e3a;
+  --forest-2: #a81730;
+  --rust: #e0632a;
+  --moss: #1a8f4c;
+  --line: #d8d2c4;
+  --card: #ffffff;
+  --shadow: 0 0 0 3px #1a1a1a, 0 6px 0 rgba(0, 0, 0, 0.15);
+  --on-accent: #ffffff;
+
+  --tag-a-bg: #ffe18a;
+  --tag-a-fg: #7a5e14;
+  --tag-b-bg: #c8f0d6;
+  --tag-b-fg: #1a8f4c;
+  --tint: rgba(200, 30, 58, 0.06);
+  --hover-bg: #f0eada;
+  --dragover-bg: #ffe9b0;
+  --overlay: rgba(20, 10, 10, 0.6);
+
+  --font-heading: 'Bungee', cursive;
+  --font-mono: 'Orbitron', var(--font-heading), monospace;
+  --heading-transform: uppercase;
+  --heading-tracking: 0.5px;
+
+  --radius-lg: 10px;
+  --radius-md: 8px;
+  --radius-xl: 14px;
+  --radius-pill: 28px;
+  --radius-tab: 10px 10px 0 0;
+  --panel-radius: 0 14px 14px 14px;
+}
+
+:root[data-theme='slots'] body {
+  background-color: #c81e3a;
+  background-image: repeating-linear-gradient(135deg, #c81e3a 0px, #c81e3a 26px, #b01732 26px, #b01732 52px);
+  background-attachment: fixed;
+}
+
+:root[data-theme='slots'] .app {
+  background: #9a9a9a;
+  background-image: linear-gradient(180deg, #e8e8e8, #9a9a9a 12%, #6b6b6b 88%, #4a4a4a);
+  border: 5px solid #1a1a1a;
+  border-radius: 20px;
+  margin: 20px auto;
+  padding: 20px 20px 34px;
+}
+
+:root[data-theme='slots'] header.top {
+  padding-top: 20px;
+  background-image: radial-gradient(circle, var(--gold) 3px, transparent 3px);
+  background-repeat: repeat-x;
+  background-position: top left;
+  background-size: 20px 9px;
+}
+
+:root[data-theme='slots'] nav.tabs button,
+:root[data-theme='slots'] .ctx-btn,
+:root[data-theme='slots'] .btn {
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-width: 3px;
+  border-style: solid;
+  border-color: #1a1a1a;
+}
+
+:root[data-theme='slots'] .ctx-btn,
+:root[data-theme='slots'] nav.tabs button {
+  border-color: #1a1a1a;
+}
+
+:root[data-theme='slots'] section.panel {
+  border: 4px solid #1a1a1a;
+}
+
+:root[data-theme='slots'] .card {
+  background: #111111;
+  border: 3px solid #1a1a1a;
+  color: #f0eada;
+}
+
+:root[data-theme='slots'] .card .label,
+:root[data-theme='slots'] .card .note {
+  color: #9a9a9a;
+}
+
+:root[data-theme='slots'] .card .value {
+  text-shadow: 0 0 8px currentColor;
+}
+
+:root[data-theme='slots'] .reserve-box {
+  background: #111111;
+  border: 3px solid var(--gold);
+}
+
+:root[data-theme='slots'] .reserve-box .ramount {
+  text-shadow: 0 0 8px rgba(255, 201, 77, 0.7);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Blackjack                                                                */
+/* ---------------------------------------------------------------------- */
+:root[data-theme='blackjack'] {
+  --paper: #0b5d3b;
+  --paper-2: #073a22;
+  --ink: #f0e6d2;
+  --ink-soft: #8fae9b;
+  --gold: #d4af37;
+  --gold-soft: #e3c468;
+  --forest: #c41e3a;
+  --forest-2: #a8172e;
+  --rust: #e2453f;
+  --moss: #3fa66b;
+  --line: rgba(240, 230, 210, 0.3);
+  --card: #094b2f;
+  --shadow: 0 0 0 1px rgba(240, 230, 210, 0.15), 0 4px 20px rgba(0, 0, 0, 0.3);
+  --on-accent: #f0e6d2;
+
+  --tag-a-bg: rgba(212, 175, 55, 0.2);
+  --tag-a-fg: #d4af37;
+  --tag-b-bg: rgba(63, 166, 107, 0.22);
+  --tag-b-fg: #3fa66b;
+  --tint: rgba(196, 30, 58, 0.08);
+  --hover-bg: #0e6b41;
+  --dragover-bg: rgba(212, 175, 55, 0.12);
+  --overlay: rgba(4, 20, 12, 0.7);
+
+  --font-heading: 'Bebas Neue', sans-serif;
+  --heading-transform: uppercase;
+  --heading-tracking: 0.5px;
+
+  --radius-lg: 6px;
+  --radius-md: 4px;
+  --radius-xl: 10px;
+  --radius-pill: 20px;
+  --radius-tab: 6px 6px 0 0;
+  --panel-radius: 0 10px 10px 10px;
+}
+
+:root[data-theme='blackjack'] body {
+  background-color: var(--paper);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='130' height='130'%3E%3Ctext x='6' y='36' font-family='Georgia,serif' font-size='30' fill='rgba(240,230,210,0.055)'%3E%E2%99%A0%3C/text%3E%3Ctext x='66' y='36' font-family='Georgia,serif' font-size='30' fill='rgba(212,175,55,0.055)'%3E%E2%99%A5%3C/text%3E%3Ctext x='16' y='100' font-family='Georgia,serif' font-size='30' fill='rgba(212,175,55,0.055)'%3E%E2%99%A6%3C/text%3E%3Ctext x='76' y='100' font-family='Georgia,serif' font-size='30' fill='rgba(240,230,210,0.055)'%3E%E2%99%A3%3C/text%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 50% 0%, #0e6b41, var(--paper) 70%);
+  background-repeat: repeat, no-repeat;
+  background-size: 130px 130px, cover;
+  background-attachment: fixed, fixed;
+}
+
+:root[data-theme='blackjack'] .app {
+  background: #5c3a21;
+  border-radius: 24px;
+  padding: 14px;
+  margin: 16px auto;
+  box-shadow: inset 0 0 0 3px #f0e6d2;
+}
+
+:root[data-theme='blackjack'] nav.tabs button,
+:root[data-theme='blackjack'] .ctx-btn,
+:root[data-theme='blackjack'] .btn {
+  font-family: var(--font-heading);
+  letter-spacing: 0.6px;
+}
+
+:root[data-theme='blackjack'] .ctx-btn.active {
+  box-shadow: 0 0 0 3px var(--forest), 0 0 0 4px rgba(240, 230, 210, 0.5);
+}
+
+:root[data-theme='blackjack'] h2.panel-title::before {
+  content: '\2660';
+  margin-right: 8px;
+  font-size: 0.75em;
+  vertical-align: middle;
+  color: var(--rust);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Bubble gum                                                              */
+/* ---------------------------------------------------------------------- */
+:root[data-theme='bubblegum'] {
+  --paper: #fff6fb;
+  --paper-2: #ffffff;
+  --ink: #6b3358;
+  --ink-soft: #b87aa0;
+  --gold: #ffd166;
+  --gold-soft: #ffe1a6;
+  --forest: #ff5ca8;
+  --forest-2: #d63e85;
+  --rust: #ff6f61;
+  --moss: #3dbe8b;
+  --line: #ffd3ea;
+  --card: #ffffff;
+  --shadow: 0 10px 30px rgba(255, 92, 168, 0.14);
+  --on-accent: #ffffff;
+
+  --tag-a-bg: rgba(255, 209, 102, 0.35);
+  --tag-a-fg: #c98a00;
+  --tag-b-bg: rgba(61, 190, 139, 0.2);
+  --tag-b-fg: #2e9670;
+  --tint: rgba(255, 92, 168, 0.06);
+  --hover-bg: #ffe9f4;
+  --dragover-bg: rgba(255, 209, 102, 0.18);
+  --overlay: rgba(107, 51, 88, 0.35);
+
+  --font-heading: 'Baloo 2', cursive;
+  --heading-transform: none;
+  --heading-tracking: 0;
+
+  --radius-lg: 20px;
+  --radius-md: 16px;
+  --radius-xl: 22px;
+  --radius-pill: 22px;
+  --radius-tab: 16px 16px 0 0;
+  --panel-radius: 28px;
+}
+
+:root[data-theme='bubblegum'] body {
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(circle, rgba(255, 92, 168, 0.1) 3px, transparent 3px),
+    radial-gradient(circle, rgba(124, 77, 255, 0.08) 2.5px, transparent 2.5px);
+  background-size: 46px 46px, 46px 46px;
+  background-position: 0 0, 23px 23px;
+  background-attachment: fixed;
+}
+
+:root[data-theme='bubblegum'] nav.tabs button,
+:root[data-theme='bubblegum'] .ctx-btn,
+:root[data-theme='bubblegum'] .btn {
+  font-family: var(--font-heading);
+  font-weight: 600;
+}
+
+:root[data-theme='bubblegum'] header.top {
+  border-bottom-style: dotted;
+  border-bottom-width: 4px;
+}
+
+:root[data-theme='bubblegum'] .ctx-btn.active,
+:root[data-theme='bubblegum'] .btn {
+  box-shadow: 0 3px 0 var(--forest-2), inset 0 2px 3px rgba(255, 255, 255, 0.5);
+}
+
+:root[data-theme='bubblegum'] .reserve-box {
+  background: linear-gradient(135deg, var(--gold), var(--forest));
+  box-shadow: 0 6px 0 var(--forest-2);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Naturel                                                                  */
+/* ---------------------------------------------------------------------- */
+:root[data-theme='natural'] {
+  --paper: #f5f1e4;
+  --paper-2: #efe9d8;
+  --ink: #3e362b;
+  --ink-soft: #8a7b63;
+  --gold: #c97b5b;
+  --gold-soft: #d9a98a;
+  --forest: #6b8f71;
+  --forest-2: #567a5c;
+  --rust: #b4573b;
+  --moss: #5c8a66;
+  --line: #e3dcc7;
+  --card: #fbf8ef;
+  --shadow: 0 8px 28px rgba(110, 95, 60, 0.08);
+  --on-accent: #f5f1e4;
+
+  --tag-a-bg: rgba(201, 123, 91, 0.18);
+  --tag-a-fg: #c97b5b;
+  --tag-b-bg: rgba(107, 143, 113, 0.2);
+  --tag-b-fg: #6b8f71;
+  --tint: rgba(107, 143, 113, 0.06);
+  --hover-bg: #efe9d8;
+  --dragover-bg: rgba(201, 123, 91, 0.12);
+  --overlay: rgba(62, 54, 43, 0.45);
+
+  --font-heading: 'Cormorant Garamond', serif;
+  --heading-transform: none;
+  --heading-tracking: 0.2px;
+
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --radius-xl: 16px;
+  --radius-pill: 14px;
+  --radius-tab: 0 0 0 0;
+  --panel-radius: 16px;
+}
+
+:root[data-theme='natural'] body {
+  background-color: var(--paper);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cg transform='translate(6,10) scale(0.85)' fill='none' stroke='rgba(107,143,113,0.16)' stroke-width='1.6'%3E%3Cpath d='M4 20c8 1 15-4 16-16C10 5 4 11 4 20Z'/%3E%3Cpath d='M4 20c4-6 8-9 16-16'/%3E%3C/g%3E%3Cg transform='translate(90,40) rotate(35) scale(0.7)' fill='none' stroke='rgba(107,143,113,0.13)' stroke-width='1.6'%3E%3Cpath d='M4 20c8 1 15-4 16-16C10 5 4 11 4 20Z'/%3E%3Cpath d='M4 20c4-6 8-9 16-16'/%3E%3C/g%3E%3Cg transform='translate(30,95) rotate(-25) scale(0.75)' fill='none' stroke='rgba(107,143,113,0.14)' stroke-width='1.6'%3E%3Cpath d='M4 20c8 1 15-4 16-16C10 5 4 11 4 20Z'/%3E%3Cpath d='M4 20c4-6 8-9 16-16'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 150px 150px;
+  background-repeat: repeat;
+  background-attachment: fixed;
+}
+
+:root[data-theme='natural'] nav.tabs button,
+:root[data-theme='natural'] .ctx-btn,
+:root[data-theme='natural'] .btn {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+:root[data-theme='natural'] nav.tabs button {
+  border: none;
+  background: transparent;
+  top: 0;
+}
+
+:root[data-theme='natural'] nav.tabs button.active {
+  border-bottom: 2px solid var(--forest);
+  box-shadow: none;
+}
+
+:root[data-theme='natural'] h2.panel-title::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 8px;
+  vertical-align: middle;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b8f71' stroke-width='1.8'%3E%3Cpath d='M4 20c8 1 15-4 16-16C10 5 4 11 4 20Z'/%3E%3Cpath d='M4 20c4-6 8-9 16-16'/%3E%3C/svg%3E");
+}
+
+:root[data-theme='natural'] header.top h1 span {
+  font-style: italic;
+}

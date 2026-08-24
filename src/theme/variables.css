@@ -1,0 +1,46 @@
+/* Jetons de design extraits tels quels du prototype grand-livre_19.html (:root).
+   :root = thème "Classique" (par défaut). Les variantes vivent dans casino.css,
+   activées via l'attribut data-theme sur <html> (voir ThemeSwitcher). */
+:root {
+  --paper: #F2ECD9;
+  --paper-2: #EAE2C7;
+  --ink: #1E2A22;
+  --ink-soft: #5B6459;
+  --gold: #B8912F;
+  --gold-soft: #D8C48A;
+  --forest: #1F3A2E;
+  --forest-2: #294A3A;
+  --rust: #9C4030;
+  --moss: #3C6E4A;
+  --line: #CBBE94;
+  --card: #FBF8EE;
+  --shadow: 0 1px 0 rgba(30, 42, 34, 0.06);
+
+  /* Couleur de texte utilisée sur les surfaces d'accent (bg: --forest / --moss :
+     bouton principal, réserve, contexte actif). Séparée de --paper pour que les
+     thèmes sombres puissent garder --paper foncé (fond de page) tout en gardant
+     un texte clair sur ces surfaces. */
+  --on-accent: var(--paper);
+
+  --tag-a-bg: #E9DFB8;
+  --tag-a-fg: #7A5E14;
+  --tag-b-bg: #DCEBE1;
+  --tag-b-fg: var(--moss);
+  --tint: rgba(184, 145, 47, 0.06);
+  --hover-bg: #E2D9B8;
+  --dragover-bg: #F5EFD8;
+  --overlay: rgba(20, 28, 22, 0.55);
+
+  --font-heading: 'Fraunces', serif;
+  --font-body: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --heading-transform: none;
+  --heading-tracking: 0.2px;
+
+  --radius-lg: 8px;
+  --radius-md: 6px;
+  --radius-xl: 10px;
+  --radius-pill: 20px;
+  --radius-tab: 8px 8px 0 0;
+  --panel-radius: 0 8px 8px 8px;
+}

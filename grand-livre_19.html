@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Livre d'affaire — Géo360</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2ECD9;
+    --paper-2:#EAE2C7;
+    --ink:#1E2A22;
+    --ink-soft:#5B6459;
+    --gold:#B8912F;
+    --gold-soft:#D8C48A;
+    --forest:#1F3A2E;
+    --forest-2:#294A3A;
+    --rust:#9C4030;
+    --moss:#3C6E4A;
+    --line:#CBBE94;
+    --card:#FBF8EE;
+    --shadow: 0 1px 0 rgba(30,42,34,0.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    min-height:100vh;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px);
+    background-size: 100% 42px;
+    background-attachment:local;
+  }
+  .app{ max-width:980px; margin:0 auto; padding:0 20px 60px; }
+  header.top{
+    display:flex; align-items:baseline; justify-content:space-between;
+    padding:28px 4px 14px;
+    border-bottom: 2px solid var(--forest);
+  }
+  header.top h1{
+    font-family:'Fraunces', serif; font-weight:600; font-size:28px; margin:0;
+    letter-spacing:0.2px;
+  }
+  header.top h1 span{ color:var(--gold); font-style:italic; font-weight:500; }
+  header.top .sub{ font-size:12px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:1.4px; margin-top:4px;}
+  header.top .date{ font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--ink-soft); text-align:right; }
+
+  nav.tabs{ display:flex; gap:6px; margin:6px 0 26px; flex-wrap:wrap; }
+  .context-switcher{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:16px; flex-wrap:wrap; }
+  .ctx-btn-group{ display:flex; gap:8px; flex-wrap:wrap; }
+  .ctx-btn{
+    font-family:'IBM Plex Sans', sans-serif; font-weight:600; font-size:12.5px;
+    background:var(--paper-2); color:var(--ink-soft); border:1.5px solid var(--line);
+    border-radius:20px; padding:7px 18px; cursor:pointer; transition:background .15s, color .15s;
+  }
+  .ctx-btn.active{ background:var(--forest); color:var(--paper); border-color:var(--forest); }
+  .ctx-btn:hover:not(.active){ background:#E2D9B8; }
+  .nav-label{ font-size:11px; text-transform:uppercase; letter-spacing:1.4px; color:var(--ink-soft); font-weight:600; margin-top:22px; }
+  nav.tabs button{
+    font-family:'IBM Plex Sans', sans-serif; font-weight:600; font-size:13px;
+    background:var(--paper-2); color:var(--ink-soft);
+    border:1px solid var(--line); border-bottom:none;
+    padding:10px 18px 12px; border-radius:8px 8px 0 0;
+    cursor:pointer; position:relative; top:1px;
+    transition:background .15s, color .15s;
+  }
+  nav.tabs button.active{
+    background:var(--card); color:var(--forest);
+    border-color:var(--gold-soft); border-bottom:2px solid var(--card);
+    box-shadow: 0 -2px 0 var(--gold) inset;
+  }
+  nav.tabs button:hover:not(.active){ background:#E2D9B8; }
+
+  section.panel{
+    background:var(--card); border:1px solid var(--line); border-radius:0 8px 8px 8px;
+    padding:28px; box-shadow: var(--shadow);
+  }
+  h2.panel-title{
+    font-family:'Fraunces', serif; font-weight:600; font-size:20px; margin:0 0 4px;
+    color:var(--forest);
+  }
+  p.panel-desc{ font-size:13px; color:var(--ink-soft); margin:0 0 22px; }
+
+  /* Dashboard / cards */
+  .cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; margin-bottom:26px; }
+  .card{
+    background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:16px 18px;
+  }
+  .card .label{ font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--ink-soft); font-weight:600; }
+  .card .label-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .mini-toggle{ display:flex; border:1px solid var(--line); border-radius:20px; overflow:hidden; }
+  .mini-toggle .mt-btn{
+    font-family:'IBM Plex Sans', sans-serif; font-size:10px; font-weight:600; letter-spacing:0.3px;
+    background:var(--paper); color:var(--ink-soft); border:none; padding:3px 9px; cursor:pointer;
+  }
+  .mini-toggle .mt-btn.active{ background:var(--moss); color:var(--card); }
+  .card .value{ font-family:'IBM Plex Mono', monospace; font-size:26px; font-weight:600; margin-top:6px; }
+  .card.income .value{ color:var(--moss); }
+  .card.expense .value{ color:var(--rust); }
+  .card.tax .value{ color:var(--forest); }
+  .card .note{ font-size:11px; color:var(--ink-soft); margin-top:4px; }
+
+  .reserve-box{
+    background:var(--forest); color:var(--paper); border-radius:8px; padding:20px 22px; margin-bottom:24px;
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
+  }
+  .reserve-box .rlabel{ font-family:'Fraunces', serif; font-size:16px; font-style:italic; opacity:.92; }
+  .reserve-box .ramount{ font-family:'IBM Plex Mono', monospace; font-size:32px; font-weight:600; color:var(--gold-soft); }
+  .reserve-box .rslider{ display:flex; align-items:center; gap:10px; font-size:12px; }
+  .reserve-box input[type=range]{ width:130px; accent-color:var(--gold); }
+
+  table.ledger{ width:100%; border-collapse:collapse; font-size:13px; }
+  table.ledger th{
+    text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:0.8px;
+    color:var(--ink-soft); border-bottom:1.5px solid var(--forest); padding:0 8px 8px;
+    font-weight:600;
+  }
+  table.ledger td{ padding:9px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.ledger tr:hover td{ background:rgba(184,145,47,0.06); }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  .num{ text-align:right; }
+  .tag{ display:inline-block; font-size:10.5px; padding:2px 8px; border-radius:20px; font-weight:600; }
+  .tag.envoyee{ background:#E9DFB8; color:#7A5E14; }
+  .tag.payee{ background:#DCEBE1; color:var(--moss); }
+
+  .icon-btn{ background:none; border:none; cursor:pointer; font-size:14px; opacity:.6; padding:2px 6px; }
+  .icon-btn:hover{ opacity:1; }
+  .icon-btn.del{ color:var(--rust); }
+
+  /* Forms */
+  .form-row{ display:flex; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+  .field{ display:flex; flex-direction:column; gap:5px; flex:1; min-width:130px; }
+  .field label{ font-size:11px; text-transform:uppercase; letter-spacing:0.6px; color:var(--ink-soft); font-weight:600; }
+  .field input, .field select{
+    font-family:'IBM Plex Sans', sans-serif; font-size:14px; padding:9px 10px;
+    border:1px solid var(--line); border-radius:6px; background:var(--paper); color:var(--ink);
+  }
+  .field input:focus, .field select:focus{ outline:2px solid var(--gold-soft); border-color:var(--gold); }
+
+  .btn{
+    font-family:'IBM Plex Sans', sans-serif; font-weight:600; font-size:13px;
+    background:var(--forest); color:var(--paper); border:none; border-radius:6px;
+    padding:11px 20px; cursor:pointer; transition:background .15s;
+  }
+  .btn:hover{ background:var(--forest-2); }
+  .btn.secondary{ background:transparent; color:var(--forest); border:1.5px solid var(--forest); }
+  .btn.secondary:hover{ background:rgba(31,58,46,0.06); }
+  .btn:disabled{ opacity:0.5; cursor:not-allowed; }
+  .btn.btn-sm{ padding:6px 12px; font-size:11.5px; }
+  .btn-row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+  .upload-zone{
+    border:2px dashed var(--line); border-radius:10px; padding:24px; text-align:center;
+    margin-bottom:20px; background:var(--paper);
+  }
+  .upload-zone.dragover{ border-color:var(--gold); background:#F5EFD8; }
+  .upload-zone p{ margin:6px 0 14px; font-size:13px; color:var(--ink-soft); }
+  .upload-zone .icon{ font-size:26px; }
+
+  .review-box{
+    background:var(--paper); border:1.5px solid var(--gold-soft); border-radius:8px; padding:18px; margin-bottom:20px;
+  }
+  .review-box .rb-title{ font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--gold); font-weight:700; margin-bottom:12px; }
+  .review-preview{ display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap; }
+  .review-preview img{ width:120px; border-radius:6px; border:1px solid var(--line); }
+  .review-fields{ flex:1; min-width:220px; }
+
+  .status-msg{ font-size:12.5px; margin:8px 0; color:var(--ink-soft); font-style:italic; }
+  .status-msg.err{ color:var(--rust); font-style:normal; font-weight:600; }
+
+  .empty{ text-align:center; padding:36px 10px; color:var(--ink-soft); font-size:13px; }
+  .empty .icon{ font-size:28px; display:block; margin-bottom:8px; }
+
+  .section-summary{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:24px; }
+  .ssum-item{ background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:12px 16px; flex:1; min-width:150px; }
+  .ssum-label{ display:block; font-size:10.5px; text-transform:uppercase; letter-spacing:0.8px; color:var(--ink-soft); font-weight:600; margin-bottom:5px; }
+  .ssum-value{ font-family:'IBM Plex Mono', monospace; font-size:19px; font-weight:600; color:var(--forest); }
+
+  .totals-strip{ display:flex; gap:22px; margin-top:16px; padding-top:14px; border-top:1.5px solid var(--forest); flex-wrap:wrap; }
+  .totals-strip .t{ font-size:12px; color:var(--ink-soft); }
+  .totals-strip .t b{ display:block; font-family:'IBM Plex Mono', monospace; font-size:17px; color:var(--forest); font-weight:600; }
+
+  a.file-link{ color:var(--forest); font-weight:600; text-decoration:underline; font-size:12.5px; }
+  .rate-note{ font-size:11.5px; color:var(--ink-soft); background:var(--paper); border-radius:6px; padding:10px 12px; margin-top:14px; }
+
+  /* Attente (unpaid invoices) box */
+  .attente-box{ border:1.5px solid var(--gold-soft); border-radius:8px; padding:16px 18px; margin:4px 0 22px; background:var(--paper); }
+  .attente-header{ display:flex; justify-content:space-between; align-items:center; font-weight:600; font-size:12px; color:var(--forest); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.6px; }
+  .attente-header .mono{ font-size:16px; }
+  .attente-row{ display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid var(--line); font-size:13px; gap:10px; flex-wrap:wrap; }
+  .attente-row:last-child{ border-bottom:none; }
+  .attente-row .ar-info{ flex:1; min-width:160px; }
+  .attente-row .ar-actions{ display:flex; gap:6px; align-items:center; }
+
+  /* Modals */
+  .modal-overlay{ position:fixed; inset:0; background:rgba(20,28,22,0.55); display:flex; align-items:center; justify-content:center; z-index:100; padding:20px; }
+  .modal-box{ background:var(--card); border-radius:10px; padding:24px; max-width:420px; width:100%; box-shadow:0 10px 40px rgba(0,0,0,0.3); position:relative; }
+  .modal-box.detail-box{ max-width:480px; max-height:85vh; overflow-y:auto; }
+  .modal-box p{ font-size:14px; margin:0 0 18px; }
+  .modal-close{ position:absolute; top:12px; right:14px; background:none; border:none; font-size:15px; cursor:pointer; color:var(--ink-soft); }
+  .modal-close:hover{ color:var(--rust); }
+  .detail-title{ font-family:'Fraunces', serif; font-size:16px; color:var(--forest); margin:0 0 14px; font-weight:600; }
+  .detail-img{ width:100%; max-width:360px; border-radius:8px; border:1px solid var(--line); margin-bottom:14px; display:block; }
+  .detail-imgs-row{ display:flex; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+  .detail-imgs-row img{ width:160px; border-radius:8px; border:1px solid var(--line); }
+  .detail-rows .drow{ display:flex; justify-content:space-between; gap:12px; padding:7px 0; border-bottom:1px solid var(--line); font-size:13px; }
+  .detail-rows .drow:last-child{ border-bottom:none; }
+  .detail-rows .drow span{ color:var(--ink-soft); }
+  .detail-rows .drow b{ font-family:'IBM Plex Mono', monospace; text-align:right; }
+
+  @media (max-width:600px){
+    header.top{ flex-direction:column; gap:6px; }
+    .reserve-box{ flex-direction:column; align-items:flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div>
+      <h1>Livre <span>d'affaire</span></h1>
+      <div class="sub">Suivi Tristan Haese — Géo360</div>
+    </div>
+    <div class="date" id="todayDate"></div>
+  </header>
+
+  <div class="context-switcher" id="contextSwitcher">
+    <div class="ctx-btn-group">
+      <button class="ctx-btn active" data-ctx="geo360" type="button">Géo360</button>
+      <button class="ctx-btn" data-ctx="manutention" type="button">Manutention</button>
+    </div>
+    <button class="btn secondary btn-sm" id="manualSaveBtn" type="button">💾 Enregistrer</button>
+    <button class="btn secondary btn-sm" id="exportDataBtn" type="button">⬇️ Exporter mes données</button>
+  </div>
+
+  <div class="nav-label">Menu</div>
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="dashboard">Tableau de bord</button>
+    <button class="tab-btn" data-tab="depenses">Dépenses</button>
+    <button class="tab-btn" data-tab="factures">Paie / Factures</button>
+    <button class="tab-btn" data-tab="km">Kilométrage</button>
+    <button class="tab-btn" data-tab="historique">Historique</button>
+  </nav>
+
+  <!-- DASHBOARD -->
+  <section class="panel" id="panel-dashboard">
+    <h2 class="panel-title">Tableau de bord</h2>
+    <p class="panel-desc">Portrait de tes revenus, dépenses et de la réserve à garder pour l'impôt (année en cours).</p>
+
+    <div class="cards">
+      <div class="card income">
+        <div class="label-row">
+          <div class="label">Revenus</div>
+          <div class="mini-toggle" id="revenuToggle">
+            <button class="mt-btn active" data-mode="payees" type="button">Payées</button>
+            <button class="mt-btn" data-mode="toutes" type="button">Toutes</button>
+          </div>
+        </div>
+        <div class="value mono" id="dashRevenu">0 $</div>
+        <div class="note" id="dashRevenuNote">—</div>
+      </div>
+      <div class="card expense">
+        <div class="label">Dépenses reliées au travail</div>
+        <div class="value mono" id="dashDepenses">0 $</div>
+        <div class="note" id="dashDepensesNote">—</div>
+      </div>
+      <div class="card">
+        <div class="label">Kilométrage d'affaires (année)</div>
+        <div class="value mono" id="dashKm">0 km</div>
+        <div class="note" id="dashKmNote">—</div>
+      </div>
+      <div class="card tax">
+        <div class="label">Revenu net imposable estimé</div>
+        <div class="value mono" id="dashNet">0 $</div>
+        <div class="note">Revenus − dépenses − kilométrage (année en cours)</div>
+      </div>
+    </div>
+
+    <div class="reserve-box">
+      <div>
+        <div class="rlabel">À mettre de côté pour l'impôt et les cotisations</div>
+        <div class="rslider">
+          <span id="reservePct">27 %</span>
+          <input type="range" id="reserveSlider" min="15" max="40" value="27">
+        </div>
+      </div>
+      <div class="ramount mono" id="reserveAmount">0 $</div>
+    </div>
+    <div class="rate-note">
+      Ceci est une estimation simple (revenu net × pourcentage choisi), pas un calcul officiel — elle ne remplace pas
+      un comptable. 27&nbsp;% est un point de départ raisonnable pour un revenu modeste ; ajuste le curseur si ton
+      comptable te donne un chiffre plus précis.
+    </div>
+  </section>
+
+  <!-- DEPENSES -->
+  <section class="panel" id="panel-depenses" style="display:none">
+    <h2 class="panel-title">Dépenses</h2>
+    <p class="panel-desc">Prends une photo de ta facture ou dépose une capture d'écran — les données principales sont extraites automatiquement.</p>
+
+    <div class="section-summary">
+      <div class="ssum-item" style="flex:0 1 220px;">
+        <div class="label-row">
+          <span class="ssum-label" id="expSummaryLabel">Total dépenses</span>
+          <div class="mini-toggle" id="expenseSummaryToggle">
+            <button class="mt-btn active" data-mode="montant" type="button">Dépenses</button>
+            <button class="mt-btn" data-mode="taxes" type="button">Taxes</button>
+          </div>
+        </div>
+        <span class="ssum-value" id="sumExpToggleValue" style="display:block; margin-top:6px;">0 $</span>
+      </div>
+      <div class="ssum-item" style="flex:0 1 160px;"><span class="ssum-label">Reçus enregistrés</span><span class="ssum-value" id="sumExpCount">0</span></div>
+    </div>
+
+    <div class="review-box" id="expenseReview">
+      <div class="rb-title" id="expenseReviewTitle">Ajoute une dépense</div>
+
+      <div class="upload-zone" id="expenseDropZone" style="margin-bottom:16px">
+        <div class="icon">🧾</div>
+        <p>Photo d'une facture papier ou capture d'écran d'une facture numérique</p>
+        <div class="btn-row" style="justify-content:center">
+          <label class="btn secondary" for="expenseCameraInput" style="cursor:pointer">📷 Prendre une photo</label>
+          <label class="btn secondary" for="expenseFileInput" style="cursor:pointer">📁 Choisir un fichier</label>
+        </div>
+        <input type="file" id="expenseCameraInput" accept="image/*" capture="environment" style="display:none">
+        <input type="file" id="expenseFileInput" accept="image/*" style="display:none">
+      </div>
+      <div class="status-msg" id="expenseStatus"></div>
+
+      <div class="review-preview">
+        <img id="expensePreviewImg" src="" alt="Aperçu de la facture" style="display:none">
+        <div class="review-fields">
+          <div class="form-row">
+            <div class="field"><label>Date</label><input type="date" id="expDate"></div>
+            <div class="field"><label>Montant total ($)</label><input type="number" step="0.01" id="expMontant"></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Description / item</label><input type="text" id="expDesc"></div>
+            <div class="field"><label>Taxes payées ($)</label><input type="number" step="0.01" id="expTaxes"></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="expenseSaveBtn">Enregistrer la dépense</button>
+            <button class="btn secondary" id="expenseCancelBtn">Annuler</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row" style="margin:6px 0 24px">
+      <button class="btn secondary" id="expenseToggleListBtn">Voir les dépenses</button>
+    </div>
+
+    <div id="expenseListWrap" style="display:none">
+      <div class="empty" id="expenseEmpty"><span class="icon">📥</span>Aucune dépense enregistrée pour l'instant.</div>
+      <table class="ledger" id="expenseTable" style="display:none">
+        <thead><tr><th>Date</th><th>Description</th><th class="num">Taxes</th><th class="num">Montant</th><th>Actions</th></tr></thead>
+        <tbody id="expenseTbody"></tbody>
+      </table>
+      <div class="btn-row" style="margin-top:14px">
+        <button class="btn secondary" id="expenseMoreBtn" style="display:none">Voir 10 de plus</button>
+      </div>
+      <div class="totals-strip" id="expenseTotals" style="display:none"></div>
+    </div>
+  </section>
+
+  <!-- FACTURES / PAIE -->
+  <section class="panel" id="panel-factures" style="display:none">
+    <h2 class="panel-title">Paie / Factures</h2>
+    <p class="panel-desc">Dépose le fichier de facture (commission ou taux horaire) que tu envoies à ton patron pour te faire payer.</p>
+
+    <div class="section-summary">
+      <div class="ssum-item"><span class="ssum-label">Total facturé</span><span class="ssum-value" id="sumInvTotal">0 $</span></div>
+      <div class="ssum-item"><span class="ssum-label">Total payé</span><span class="ssum-value" id="sumInvPaye">0 $</span></div>
+    </div>
+
+    <div class="upload-zone" id="invoiceDropZone">
+      <div class="icon">📄</div>
+      <p>Glisse un fichier ici ou choisis-le sur ton ordinateur (PDF, image, etc.)</p>
+      <label class="btn secondary" for="invoiceFileInput" style="cursor:pointer">📁 Choisir un fichier</label>
+      <input type="file" id="invoiceFileInput" style="display:none">
+    </div>
+    <div class="status-msg" id="invoiceFileStatus"></div>
+
+    <div class="form-row">
+      <div class="field"><label>Date de la facture</label><input type="date" id="invDate"></div>
+      <div class="field"><label>Type</label>
+        <select id="invType"><option value="Commission">Commission</option><option value="Taux horaire">Taux horaire</option></select>
+      </div>
+      <div class="field"><label>Montant ($)</label><input type="number" step="0.01" id="invMontant"></div>
+      <div class="field"><label>Statut</label>
+        <select id="invStatut"><option value="Envoyée">Envoyée</option><option value="Payée">Payée</option></select>
+      </div>
+    </div>
+    <div class="btn-row" style="margin-bottom:22px">
+      <button class="btn" id="invoiceSaveBtn">Enregistrer la facture</button>
+    </div>
+
+    <div class="attente-box">
+      <div class="attente-header"><span>En attente de paiement</span><span class="mono" id="sumInvAttenteValue">0 $</span></div>
+      <div id="attenteListWrap"></div>
+    </div>
+
+    <div class="btn-row" style="margin-bottom:24px">
+      <button class="btn secondary" id="invoiceToggleListBtn">Voir les factures</button>
+    </div>
+
+    <div id="invoiceListWrap" style="display:none">
+      <div class="empty" id="invoiceEmpty"><span class="icon">📥</span>Aucune facture enregistrée pour l'instant.</div>
+      <table class="ledger" id="invoiceTable" style="display:none">
+        <thead><tr><th>Date</th><th>Type</th><th>Statut</th><th class="num">Montant</th><th>Actions</th></tr></thead>
+        <tbody id="invoiceTbody"></tbody>
+      </table>
+      <div class="btn-row" style="margin-top:14px">
+        <button class="btn secondary" id="invoiceMoreBtn" style="display:none">Voir 10 de plus</button>
+      </div>
+      <div class="totals-strip" id="invoiceTotals" style="display:none"></div>
+    </div>
+  </section>
+
+  <!-- KM -->
+  <section class="panel" id="panel-km" style="display:none">
+    <h2 class="panel-title">Kilométrage d'affaires</h2>
+    <p class="panel-desc">Inscris chaque déplacement fait pour le travail.</p>
+
+    <div class="section-summary">
+      <div class="ssum-item"><span class="ssum-label">Cette année</span><span class="ssum-value" id="sumKmYear">0 km</span></div>
+      <div class="ssum-item"><span class="ssum-label">Total tous les temps</span><span class="ssum-value" id="sumKmAll">0 km</span></div>
+    </div>
+
+    <div class="form-row">
+      <div class="field"><label>Date</label><input type="date" id="kmDate"></div>
+      <div class="field"><label>Kilomètres</label><input type="number" step="0.1" id="kmValue"></div>
+      <div class="field" style="flex:2"><label>Motif du déplacement</label><input type="text" id="kmMotif" placeholder="Ex : visite client, tournage 360 à Laval"></div>
+    </div>
+    <div class="btn-row" style="margin-bottom:8px">
+      <label class="btn secondary" for="kmPhotoBefore" style="cursor:pointer">📷 Photo du tableau de bord — avant</label>
+      <input type="file" id="kmPhotoBefore" accept="image/*" capture="environment" style="display:none">
+      <label class="btn secondary" for="kmPhotoAfter" style="cursor:pointer">📷 Photo du tableau de bord — après</label>
+      <input type="file" id="kmPhotoAfter" accept="image/*" capture="environment" style="display:none">
+    </div>
+    <div class="status-msg" id="kmPhotoStatus"></div>
+    <div class="btn-row" style="margin-bottom:24px">
+      <button class="btn" id="kmSaveBtn">Ajouter le trajet</button>
+    </div>
+
+    <div class="btn-row" style="margin-bottom:24px">
+      <button class="btn secondary" id="kmToggleListBtn">Voir les trajets</button>
+    </div>
+
+    <div id="kmListWrap" style="display:none">
+      <div class="empty" id="kmEmpty"><span class="icon">🚗</span>Aucun trajet enregistré pour l'instant.</div>
+      <table class="ledger" id="kmTable" style="display:none">
+        <thead><tr><th>Date</th><th>Motif</th><th class="num">Km</th><th>Actions</th></tr></thead>
+        <tbody id="kmTbody"></tbody>
+      </table>
+      <div class="btn-row" style="margin-top:14px">
+        <button class="btn secondary" id="kmMoreBtn" style="display:none">Voir 10 de plus</button>
+      </div>
+      <div class="totals-strip" id="kmTotals" style="display:none"></div>
+    </div>
+
+    <div class="rate-note">
+      Rappel : comme travailleur autonome, tu déduis la portion "affaires" de tes dépenses réelles de véhicule
+      au prorata du kilométrage d'affaires — le taux de 0,70&nbsp;$/km utilisé ici sert seulement de repère rapide
+      pour ton estimé d'impôt.
+    </div>
+  </section>
+
+  <!-- HISTORIQUE -->
+  <section class="panel" id="panel-historique" style="display:none">
+    <h2 class="panel-title">Historique financier</h2>
+    <p class="panel-desc">Suis l'évolution de tes revenus, dépenses et kilométrage dans le temps.</p>
+
+    <div class="mini-toggle" id="histModeToggle" style="width:fit-content; margin-bottom:20px;">
+      <button class="mt-btn active" data-mode="annee" type="button">Par année</button>
+      <button class="mt-btn" data-mode="date" type="button">À une date précise</button>
+    </div>
+
+    <div id="histByYear">
+      <div class="form-row">
+        <div class="field" style="max-width:200px"><label>Année</label><select id="histYearSelect"></select></div>
+      </div>
+    </div>
+    <div id="histByDate" style="display:none">
+      <div class="form-row">
+        <div class="field" style="max-width:240px"><label>Totaux cumulés jusqu'au</label><input type="date" id="histDateInput"></div>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card income">
+        <div class="label">Revenus (factures payées)</div>
+        <div class="value mono" id="histRevenu">0 $</div>
+        <div class="note" id="histRevenuNote">—</div>
+      </div>
+      <div class="card expense">
+        <div class="label">Dépenses</div>
+        <div class="value mono" id="histDepenses">0 $</div>
+        <div class="note" id="histDepensesNote">—</div>
+      </div>
+      <div class="card">
+        <div class="label">Kilométrage</div>
+        <div class="value mono" id="histKm">0 km</div>
+        <div class="note" id="histKmNote">—</div>
+      </div>
+      <div class="card tax">
+        <div class="label">Revenu net estimé</div>
+        <div class="value mono" id="histNet">0 $</div>
+        <div class="note" id="histNetNote">—</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Confirm delete modal -->
+<div class="modal-overlay" id="confirmOverlay" style="display:none">
+  <div class="modal-box">
+    <p id="confirmText">Voulez-vous vraiment supprimer ?</p>
+    <div class="btn-row" style="justify-content:flex-end">
+      <button class="btn secondary" id="confirmNoBtn">Non</button>
+      <button class="btn" id="confirmYesBtn">Oui</button>
+    </div>
+  </div>
+</div>
+
+<!-- Detail modal -->
+<div class="modal-overlay" id="detailOverlay" style="display:none">
+  <div class="modal-box detail-box">
+    <button class="modal-close" id="detailCloseBtn">✕</button>
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<script>
+const KM_RATE = 0.70; // repère approximatif utilisé seulement pour l'estimation
+let expenses = [];
+let invoices = [];
+let trips = [];
+let pendingExpenseImage = null;
+
+// ---------- Contexte (Géo360 / Manutention) ----------
+let currentContext = 'geo360';
+const CONTEXT_NAMES = { geo360:'Géo360', manutention:'Manutention' };
+function k(key){ return currentContext + ':' + key; }
+
+function updateContextUI(){
+  document.querySelector('header.top .sub').textContent = 'Suivi Tristan Haese — ' + CONTEXT_NAMES[currentContext];
+  document.querySelectorAll('.ctx-btn').forEach(b=>b.classList.toggle('active', b.dataset.ctx===currentContext));
+}
+
+async function saveAllForContext(){
+  await safeSet(k('depenses-index'), JSON.stringify(expenses));
+  await safeSet(k('factures-index'), JSON.stringify(invoices));
+  await safeSet(k('trajets'), JSON.stringify(trips));
+}
+
+document.getElementById('manualSaveBtn').addEventListener('click', async ()=>{
+  const btn = document.getElementById('manualSaveBtn');
+  const original = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Enregistrement…';
+  await saveAllForContext();
+  btn.textContent = '✓ Enregistré';
+  setTimeout(()=>{ btn.textContent = original; btn.disabled = false; }, 1500);
+});
+
+// ---------- Export complet (pour migration vers la nouvelle appli React) ----------
+// window.storage n'a pas de méthode "lister toutes les clés" : on énumère donc
+// nous-mêmes tous les préfixes de clés que cette appli est susceptible d'avoir
+// écrits (legacy sans préfixe + geo360: + manutention:), en suivant les id
+// présents dans chaque index pour retrouver les images/fichiers associés.
+async function exportAllData(){
+  const btn = document.getElementById('exportDataBtn');
+  const original = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Export en cours…';
+  try{
+    const data = {};
+    const prefixes = ['', 'geo360:', 'manutention:'];
+    for(const prefix of prefixes){
+      const depRaw = await safeGet(prefix + 'depenses-index');
+      if(depRaw){
+        data[prefix + 'depenses-index'] = depRaw;
+        let arr = [];
+        try{ arr = JSON.parse(depRaw); }catch(e){ arr = []; }
+        for(const e of arr){
+          if(!e || !e.id) continue;
+          const img = await safeGet(prefix + 'depense-img:' + e.id);
+          if(img) data[prefix + 'depense-img:' + e.id] = img;
+        }
+      }
+      const invRaw = await safeGet(prefix + 'factures-index');
+      if(invRaw){
+        data[prefix + 'factures-index'] = invRaw;
+        let arr = [];
+        try{ arr = JSON.parse(invRaw); }catch(e){ arr = []; }
+        for(const f of arr){
+          if(!f || !f.id || !f.hasFile) continue;
+          const file = await safeGet(prefix + 'facture-file:' + f.id);
+          if(file) data[prefix + 'facture-file:' + f.id] = file;
+        }
+      }
+      const tripRaw = await safeGet(prefix + 'trajets');
+      if(tripRaw){
+        data[prefix + 'trajets'] = tripRaw;
+        let arr = [];
+        try{ arr = JSON.parse(tripRaw); }catch(e){ arr = []; }
+        for(const t of arr){
+          if(!t || !t.id) continue;
+          if(t.hasBefore){
+            const img = await safeGet(prefix + 'trip-img-before:' + t.id);
+            if(img) data[prefix + 'trip-img-before:' + t.id] = img;
+          }
+          if(t.hasAfter){
+            const img = await safeGet(prefix + 'trip-img-after:' + t.id);
+            if(img) data[prefix + 'trip-img-after:' + t.id] = img;
+          }
+        }
+      }
+    }
+    const marker = await safeGet('migration-v2-done');
+    if(marker) data['migration-v2-done'] = marker;
+
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      version: 'grand-livre-prototype-v19',
+      data,
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `livre-affaire-export-${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    btn.textContent = '✓ Exporté';
+  }catch(err){
+    console.error('Export échoué', err);
+    btn.textContent = '✕ Erreur — voir la console';
+  }finally{
+    setTimeout(()=>{ btn.textContent = original; btn.disabled = false; }, 2500);
+  }
+}
+document.getElementById('exportDataBtn').addEventListener('click', exportAllData);
+
+document.querySelectorAll('.ctx-btn').forEach(btn=>{
+  btn.addEventListener('click', async ()=>{
+    if(btn.dataset.ctx === currentContext) return;
+    await saveAllForContext(); // s'assure que le contexte quitté est bien sauvegardé
+    currentContext = btn.dataset.ctx;
+    updateContextUI();
+    // réinitialiser l'affichage des listes lors du changement de contexte
+    expenseVisible = 10; invoiceVisible = 10; tripVisible = 10;
+    expenseListShown = false; invoiceListShown = false; tripListShown = false;
+    document.getElementById('expenseListWrap').style.display = 'none';
+    document.getElementById('expenseToggleListBtn').textContent = 'Voir les dépenses';
+    document.getElementById('invoiceListWrap').style.display = 'none';
+    document.getElementById('invoiceToggleListBtn').textContent = 'Voir les factures';
+    document.getElementById('kmListWrap').style.display = 'none';
+    document.getElementById('kmToggleListBtn').textContent = 'Voir les trajets';
+    await loadAll();
+  });
+});
+
+// ---------- Migration : anciennes données (avant l'ajout des contextes) vers Géo360 ----------
+async function migrateLegacyData(){
+  const marker = await safeGet('migration-v2-done');
+  if(marker) return;
+
+  async function mergeIndex(oldKey, newKey){
+    const oldRaw = await safeGet(oldKey);
+    if(!oldRaw) return [];
+    let oldArr = [];
+    try{ oldArr = JSON.parse(oldRaw); }catch(e){ oldArr = []; }
+    if(oldArr.length===0) return [];
+    const newRaw = await safeGet(newKey);
+    let newArr = [];
+    if(newRaw){ try{ newArr = JSON.parse(newRaw); }catch(e){ newArr = []; } }
+    const existingIds = new Set(newArr.map(x=>x.id));
+    const merged = [...newArr, ...oldArr.filter(x=>!existingIds.has(x.id))];
+    await safeSet(newKey, JSON.stringify(merged));
+    return oldArr;
+  }
+
+  const oldExpenses = await mergeIndex('depenses-index', 'geo360:depenses-index');
+  for(const e of oldExpenses){
+    const img = await safeGet('depense-img:'+e.id);
+    if(img) await safeSet('geo360:depense-img:'+e.id, img);
+  }
+
+  const oldInvoices = await mergeIndex('factures-index', 'geo360:factures-index');
+  for(const f of oldInvoices){
+    const file = await safeGet('facture-file:'+f.id);
+    if(file) await safeSet('geo360:facture-file:'+f.id, file);
+  }
+
+  const oldTrips = await mergeIndex('trajets', 'geo360:trajets');
+  for(const t of oldTrips){
+    const before = await safeGet('trip-img-before:'+t.id);
+    if(before) await safeSet('geo360:trip-img-before:'+t.id, before);
+    const after = await safeGet('trip-img-after:'+t.id);
+    if(after) await safeSet('geo360:trip-img-after:'+t.id, after);
+  }
+
+  await safeSet('migration-v2-done', '1');
+}
+
+let expenseListShown = false, expenseVisible = 10;
+let invoiceListShown = false, invoiceVisible = 10;
+let tripListShown = false, tripVisible = 10;
+let expenseSummaryMode = 'montant';
+let revenuMode = 'payees';
+
+document.getElementById('todayDate').textContent = new Date().toLocaleDateString('fr-CA', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+document.getElementById('histDateInput').value = new Date().toISOString().slice(0,10);
+
+// ---------- Tabs ----------
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('section.panel').forEach(p=>p.style.display='none');
+    document.getElementById('panel-'+btn.dataset.tab).style.display='block';
+    if(btn.dataset.tab==='historique') renderHistorique();
+  });
+});
+
+function fmtMoney(n){ return (Math.round((n||0)*100)/100).toLocaleString('fr-CA',{style:'currency',currency:'CAD'}); }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// ---------- Storage helpers ----------
+async function safeGet(key, shared=false){
+  try{ const r = await window.storage.get(key, shared); return r ? r.value : null; }
+  catch(e){ return null; }
+}
+async function safeSet(key, value, shared=false){
+  try{ return await window.storage.set(key, value, shared); }
+  catch(e){ console.error('storage set failed', key, e); return null; }
+}
+async function safeDelete(key, shared=false){
+  try{ return await window.storage.delete(key, shared); } catch(e){ return null; }
+}
+
+// ---------- Confirm & Detail modals ----------
+let pendingDeleteAction = null;
+function openConfirm(msg, action){
+  pendingDeleteAction = action;
+  document.getElementById('confirmText').textContent = msg;
+  document.getElementById('confirmOverlay').style.display = 'flex';
+}
+document.getElementById('confirmYesBtn').addEventListener('click', ()=>{
+  document.getElementById('confirmOverlay').style.display = 'none';
+  if(pendingDeleteAction) pendingDeleteAction();
+  pendingDeleteAction = null;
+});
+document.getElementById('confirmNoBtn').addEventListener('click', ()=>{
+  document.getElementById('confirmOverlay').style.display = 'none';
+  pendingDeleteAction = null;
+});
+document.getElementById('confirmOverlay').addEventListener('click', e=>{ if(e.target.id==='confirmOverlay'){ e.currentTarget.style.display='none'; pendingDeleteAction=null; } });
+
+function openDetail(html){
+  document.getElementById('detailContent').innerHTML = html;
+  document.getElementById('detailOverlay').style.display = 'flex';
+}
+document.getElementById('detailCloseBtn').addEventListener('click', ()=>{ document.getElementById('detailOverlay').style.display='none'; });
+document.getElementById('detailOverlay').addEventListener('click', e=>{ if(e.target.id==='detailOverlay'){ e.currentTarget.style.display='none'; } });
+
+function confirmDeleteExpense(id){ openConfirm('Voulez-vous vraiment supprimer cette dépense ?', ()=>deleteExpense(id)); }
+function confirmDeleteInvoice(id){ openConfirm('Voulez-vous vraiment supprimer cette facture ?', ()=>deleteInvoice(id)); }
+function confirmDeleteTrip(id){ openConfirm('Voulez-vous vraiment supprimer ce trajet ?', ()=>deleteTrip(id)); }
+
+// ---------- Load all data ----------
+async function loadAll(){
+  const expIndex = await safeGet(k('depenses-index'));
+  expenses = expIndex ? JSON.parse(expIndex) : [];
+  const invIndex = await safeGet(k('factures-index'));
+  invoices = invIndex ? JSON.parse(invIndex) : [];
+  const kmData = await safeGet(k('trajets'));
+  trips = kmData ? JSON.parse(kmData) : [];
+  renderExpenses(); renderInvoices(); renderKm(); renderDashboard(); renderHistorique();
+}
+
+// ================= DEPENSES =================
+const expenseStatus = document.getElementById('expenseStatus');
+
+function handleExpenseFile(file){
+  if(!file) return;
+  expenseStatus.textContent = 'Lecture de l\'image…';
+  expenseStatus.className = 'status-msg';
+  const reader = new FileReader();
+  reader.onload = async (e)=>{
+    const dataUrl = e.target.result;
+    compressImage(dataUrl, 1100, 0.72).then(async (compressed)=>{
+      pendingExpenseImage = compressed;
+      const previewImg = document.getElementById('expensePreviewImg');
+      previewImg.src = compressed.dataUrl;
+      previewImg.style.display = 'block';
+      await extractExpenseData(compressed);
+    });
+  };
+  reader.readAsDataURL(file);
+}
+
+function compressImage(dataUrl, maxWidth, quality){
+  return new Promise((resolve)=>{
+    const img = new Image();
+    img.onload = ()=>{
+      let w = img.width, h = img.height;
+      if(w > maxWidth){ h = Math.round(h * maxWidth / w); w = maxWidth; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const out = canvas.toDataURL('image/jpeg', quality);
+      resolve({ dataUrl: out, base64: out.split(',')[1], mediaType: 'image/jpeg' });
+    };
+    img.src = dataUrl;
+  });
+}
+
+async function extractExpenseData(img){
+  expenseStatus.textContent = 'Extraction des données en cours…';
+  try{
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:500,
+        messages:[{
+          role:'user',
+          content:[
+            { type:'image', source:{ type:'base64', media_type: img.mediaType, data: img.base64 } },
+            { type:'text', text:'Cette image est une facture ou un reçu de dépense. Réponds UNIQUEMENT avec un objet JSON valide, sans texte autour, sans balises markdown, au format exact : {"date":"AAAA-MM-JJ","description":"court résumé de l\'item ou du commerce","montant":0.00,"taxes":0.00}. "montant" est le total payé (taxes incluses). "taxes" est le total des taxes (TPS+TVQ ou équivalent) si visible, sinon 0. Si une information est illisible, fais ta meilleure estimation raisonnable.' }
+          ]
+        }]
+      })
+    });
+    const data = await response.json();
+    const textBlock = (data.content || []).map(c=>c.text||'').join('');
+    const clean = textBlock.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+    document.getElementById('expDate').value = parsed.date || '';
+    document.getElementById('expDesc').value = parsed.description || '';
+    document.getElementById('expMontant').value = parsed.montant ?? '';
+    document.getElementById('expTaxes').value = parsed.taxes ?? '';
+    expenseStatus.textContent = 'Données extraites — vérifie avant d\'enregistrer.';
+    expenseStatus.className = 'status-msg';
+  }catch(err){
+    console.error(err);
+    expenseStatus.textContent = 'Extraction automatique impossible — remplis les champs manuellement.';
+    expenseStatus.className = 'status-msg err';
+  }
+  document.getElementById('expenseReviewTitle').textContent = 'Vérifie les données extraites avant d\'enregistrer';
+  document.getElementById('expenseReview').style.display = 'block';
+}
+
+document.getElementById('expenseCameraInput').addEventListener('change', e=>handleExpenseFile(e.target.files[0]));
+document.getElementById('expenseFileInput').addEventListener('change', e=>handleExpenseFile(e.target.files[0]));
+
+const expenseDropZone = document.getElementById('expenseDropZone');
+['dragover','dragenter'].forEach(ev=>expenseDropZone.addEventListener(ev, e=>{e.preventDefault(); expenseDropZone.classList.add('dragover');}));
+['dragleave','drop'].forEach(ev=>expenseDropZone.addEventListener(ev, e=>{e.preventDefault(); expenseDropZone.classList.remove('dragover');}));
+expenseDropZone.addEventListener('drop', e=>{ if(e.dataTransfer.files[0]) handleExpenseFile(e.dataTransfer.files[0]); });
+
+document.getElementById('expenseCancelBtn').addEventListener('click', ()=>{
+  const previewImg = document.getElementById('expensePreviewImg');
+  previewImg.src = ''; previewImg.style.display = 'none';
+  document.getElementById('expenseReviewTitle').textContent = 'Ajoute une dépense';
+  pendingExpenseImage = null; expenseStatus.textContent='';
+  ['expDate','expDesc','expMontant','expTaxes'].forEach(id=>document.getElementById(id).value='');
+});
+
+document.getElementById('expenseSaveBtn').addEventListener('click', async ()=>{
+  const id = uid();
+  const record = {
+    id,
+    date: document.getElementById('expDate').value || new Date().toISOString().slice(0,10),
+    description: document.getElementById('expDesc').value || '(sans description)',
+    montant: parseFloat(document.getElementById('expMontant').value) || 0,
+    taxes: parseFloat(document.getElementById('expTaxes').value) || 0,
+  };
+  const saveBtn = document.getElementById('expenseSaveBtn');
+  saveBtn.disabled = true; saveBtn.textContent = 'Enregistrement…';
+  if(pendingExpenseImage){
+    await safeSet(k('depense-img:'+id), pendingExpenseImage.dataUrl);
+  }
+  expenses.unshift(record);
+  await safeSet(k('depenses-index'), JSON.stringify(expenses));
+  saveBtn.disabled = false; saveBtn.textContent = 'Enregistrer la dépense';
+  const previewImg = document.getElementById('expensePreviewImg');
+  previewImg.src = ''; previewImg.style.display = 'none';
+  document.getElementById('expenseReviewTitle').textContent = 'Ajoute une dépense';
+  pendingExpenseImage = null; expenseStatus.textContent='';
+  ['expDate','expDesc','expMontant','expTaxes'].forEach(id=>document.getElementById(id).value='');
+  renderExpenses(); renderDashboard(); renderHistorique();
+});
+
+document.getElementById('expenseToggleListBtn').addEventListener('click', ()=>{
+  expenseListShown = !expenseListShown;
+  document.getElementById('expenseListWrap').style.display = expenseListShown ? 'block' : 'none';
+  document.getElementById('expenseToggleListBtn').textContent = expenseListShown ? 'Masquer les dépenses' : 'Voir les dépenses';
+});
+document.getElementById('expenseMoreBtn').addEventListener('click', ()=>{ expenseVisible += 10; renderExpenseList(); });
+
+document.querySelectorAll('#expenseSummaryToggle .mt-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    expenseSummaryMode = btn.dataset.mode;
+    document.querySelectorAll('#expenseSummaryToggle .mt-btn').forEach(b=>b.classList.toggle('active', b===btn));
+    renderExpenses();
+  });
+});
+
+function renderExpenses(){
+  const totalMontant = expenses.reduce((s,e)=>s+e.montant,0);
+  const totalTaxes = expenses.reduce((s,e)=>s+e.taxes,0);
+  document.getElementById('expSummaryLabel').textContent = expenseSummaryMode==='montant' ? 'Total dépenses' : 'Total taxes payées';
+  document.getElementById('sumExpToggleValue').textContent = expenseSummaryMode==='montant' ? fmtMoney(totalMontant) : fmtMoney(totalTaxes);
+  document.getElementById('sumExpCount').textContent = String(expenses.length);
+  renderExpenseList();
+}
+
+function renderExpenseList(){
+  const tbody = document.getElementById('expenseTbody');
+  const table = document.getElementById('expenseTable');
+  const empty = document.getElementById('expenseEmpty');
+  const totals = document.getElementById('expenseTotals');
+  const moreBtn = document.getElementById('expenseMoreBtn');
+  if(expenses.length===0){
+    table.style.display='none'; empty.style.display='block'; totals.style.display='none'; moreBtn.style.display='none';
+    return;
+  }
+  empty.style.display='none'; table.style.display='table'; totals.style.display='flex';
+  const sorted = [...expenses].sort((a,b)=>b.date.localeCompare(a.date));
+  const shown = sorted.slice(0, expenseVisible);
+  tbody.innerHTML = shown.map(e=>`
+    <tr>
+      <td class="mono">${e.date}</td>
+      <td>${escapeHtml(e.description)}</td>
+      <td class="mono num">${fmtMoney(e.taxes)}</td>
+      <td class="mono num">${fmtMoney(e.montant)}</td>
+      <td>
+        <button class="icon-btn" onclick="showExpenseDetail('${e.id}')" title="Détails">🔍</button>
+        <button class="icon-btn del" onclick="confirmDeleteExpense('${e.id}')" title="Supprimer">✕</button>
+      </td>
+    </tr>`).join('');
+  moreBtn.style.display = sorted.length > expenseVisible ? 'inline-block' : 'none';
+  const totalMontant = expenses.reduce((s,e)=>s+e.montant,0);
+  const totalTaxes = expenses.reduce((s,e)=>s+e.taxes,0);
+  totals.innerHTML = `<div class="t">Total dépenses<b>${fmtMoney(totalMontant)}</b></div><div class="t">Total taxes payées<b>${fmtMoney(totalTaxes)}</b></div><div class="t">Nombre de reçus<b>${expenses.length}</b></div>`;
+}
+
+async function showExpenseDetail(id){
+  const e = expenses.find(x=>x.id===id);
+  if(!e) return;
+  const img = await safeGet(k('depense-img:'+id));
+  let html = `<h3 class="detail-title">Détail de la dépense</h3>`;
+  if(img) html += `<img class="detail-img" src="${img}" alt="Facture">`;
+  html += `<div class="detail-rows">
+    <div class="drow"><span>Date</span><b>${e.date}</b></div>
+    <div class="drow"><span>Description</span><b>${escapeHtml(e.description)}</b></div>
+    <div class="drow"><span>Montant</span><b>${fmtMoney(e.montant)}</b></div>
+    <div class="drow"><span>Taxes</span><b>${fmtMoney(e.taxes)}</b></div>
+  </div>`;
+  openDetail(html);
+}
+
+async function deleteExpense(id){
+  expenses = expenses.filter(e=>e.id!==id);
+  await safeSet(k('depenses-index'), JSON.stringify(expenses));
+  await safeDelete(k('depense-img:'+id));
+  renderExpenses(); renderDashboard(); renderHistorique();
+}
+
+// ================= FACTURES =================
+let pendingInvoiceFile = null;
+const invoiceFileStatus = document.getElementById('invoiceFileStatus');
+
+function handleInvoiceFile(file){
+  if(!file) return;
+  if(file.size > 4.5*1024*1024){
+    invoiceFileStatus.textContent = `"${file.name}" est trop volumineux pour être sauvegardé ici (>4,5 Mo) — seul le nom sera conservé.`;
+    invoiceFileStatus.className = 'status-msg err';
+    pendingInvoiceFile = { name:file.name, tooLarge:true };
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = e=>{
+    pendingInvoiceFile = { name:file.name, dataUrl:e.target.result, tooLarge:false };
+    invoiceFileStatus.textContent = `Fichier prêt : ${file.name}`;
+    invoiceFileStatus.className = 'status-msg';
+  };
+  reader.readAsDataURL(file);
+}
+document.getElementById('invoiceFileInput').addEventListener('change', e=>handleInvoiceFile(e.target.files[0]));
+const invoiceDropZone = document.getElementById('invoiceDropZone');
+['dragover','dragenter'].forEach(ev=>invoiceDropZone.addEventListener(ev, e=>{e.preventDefault(); invoiceDropZone.classList.add('dragover');}));
+['dragleave','drop'].forEach(ev=>invoiceDropZone.addEventListener(ev, e=>{e.preventDefault(); invoiceDropZone.classList.remove('dragover');}));
+invoiceDropZone.addEventListener('drop', e=>{ if(e.dataTransfer.files[0]) handleInvoiceFile(e.dataTransfer.files[0]); });
+
+document.getElementById('invoiceSaveBtn').addEventListener('click', async ()=>{
+  const id = uid();
+  const record = {
+    id,
+    date: document.getElementById('invDate').value || new Date().toISOString().slice(0,10),
+    type: document.getElementById('invType').value,
+    montant: parseFloat(document.getElementById('invMontant').value) || 0,
+    statut: document.getElementById('invStatut').value,
+    fileName: pendingInvoiceFile ? pendingInvoiceFile.name : null,
+    hasFile: !!(pendingInvoiceFile && !pendingInvoiceFile.tooLarge),
+  };
+  if(pendingInvoiceFile && !pendingInvoiceFile.tooLarge){
+    await safeSet(k('facture-file:'+id), pendingInvoiceFile.dataUrl);
+  }
+  invoices.unshift(record);
+  await safeSet(k('factures-index'), JSON.stringify(invoices));
+  pendingInvoiceFile = null; invoiceFileStatus.textContent='';
+  ['invDate','invMontant'].forEach(i=>document.getElementById(i).value='');
+  renderInvoices(); renderDashboard(); renderHistorique();
+});
+
+document.getElementById('invoiceToggleListBtn').addEventListener('click', ()=>{
+  invoiceListShown = !invoiceListShown;
+  document.getElementById('invoiceListWrap').style.display = invoiceListShown ? 'block' : 'none';
+  document.getElementById('invoiceToggleListBtn').textContent = invoiceListShown ? 'Masquer les factures' : 'Voir les factures';
+});
+document.getElementById('invoiceMoreBtn').addEventListener('click', ()=>{ invoiceVisible += 10; renderInvoiceList(); });
+
+async function markInvoicePaid(id){
+  const inv = invoices.find(f=>f.id===id);
+  if(!inv) return;
+  inv.statut = 'Payée';
+  await safeSet(k('factures-index'), JSON.stringify(invoices));
+  renderInvoices(); renderDashboard(); renderHistorique();
+}
+
+function renderInvoices(){
+  const totalTout = invoices.reduce((s,f)=>s+f.montant,0);
+  const totalPaye = invoices.filter(f=>f.statut==='Payée').reduce((s,f)=>s+f.montant,0);
+  document.getElementById('sumInvTotal').textContent = fmtMoney(totalTout);
+  document.getElementById('sumInvPaye').textContent = fmtMoney(totalPaye);
+  renderAttente();
+  renderInvoiceList();
+}
+
+function renderAttente(){
+  const wrap = document.getElementById('attenteListWrap');
+  const pending = invoices.filter(f=>f.statut!=='Payée').sort((a,b)=>b.date.localeCompare(a.date));
+  const totalAttente = pending.reduce((s,f)=>s+f.montant,0);
+  document.getElementById('sumInvAttenteValue').textContent = fmtMoney(totalAttente);
+  if(pending.length===0){
+    wrap.innerHTML = `<p class="status-msg" style="margin:2px 0 0">Aucune facture en attente de paiement.</p>`;
+    return;
+  }
+  wrap.innerHTML = pending.map(f=>`
+    <div class="attente-row">
+      <div class="ar-info"><span class="mono">${f.date}</span> — ${f.type} — <span class="mono">${fmtMoney(f.montant)}</span></div>
+      <div class="ar-actions">
+        <button class="btn secondary btn-sm" onclick="markInvoicePaid('${f.id}')">Payé</button>
+        <button class="icon-btn" onclick="showInvoiceDetail('${f.id}')" title="Détails">🔍</button>
+        <button class="icon-btn del" onclick="confirmDeleteInvoice('${f.id}')" title="Supprimer">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderInvoiceList(){
+  const tbody = document.getElementById('invoiceTbody');
+  const table = document.getElementById('invoiceTable');
+  const empty = document.getElementById('invoiceEmpty');
+  const totals = document.getElementById('invoiceTotals');
+  const moreBtn = document.getElementById('invoiceMoreBtn');
+  if(invoices.length===0){
+    table.style.display='none'; empty.style.display='block'; totals.style.display='none'; moreBtn.style.display='none';
+    return;
+  }
+  empty.style.display='none'; table.style.display='table'; totals.style.display='flex';
+  const sorted = [...invoices].sort((a,b)=>b.date.localeCompare(a.date));
+  const shown = sorted.slice(0, invoiceVisible);
+  tbody.innerHTML = shown.map(f=>`
+    <tr>
+      <td class="mono">${f.date}</td>
+      <td>${f.type}</td>
+      <td><span class="tag ${f.statut==='Payée'?'payee':'envoyee'}">${f.statut}</span></td>
+      <td class="mono num">${fmtMoney(f.montant)}</td>
+      <td>
+        <button class="icon-btn" onclick="showInvoiceDetail('${f.id}')" title="Détails">🔍</button>
+        <button class="icon-btn del" onclick="confirmDeleteInvoice('${f.id}')" title="Supprimer">✕</button>
+      </td>
+    </tr>`).join('');
+  moreBtn.style.display = sorted.length > invoiceVisible ? 'inline-block' : 'none';
+  const totalTout = invoices.reduce((s,f)=>s+f.montant,0);
+  const totalPaye = invoices.filter(f=>f.statut==='Payée').reduce((s,f)=>s+f.montant,0);
+  totals.innerHTML = `<div class="t">Total facturé<b>${fmtMoney(totalTout)}</b></div><div class="t">Total payé<b>${fmtMoney(totalPaye)}</b></div><div class="t">En attente<b>${fmtMoney(totalTout-totalPaye)}</b></div>`;
+}
+
+async function showInvoiceDetail(id){
+  const f = invoices.find(x=>x.id===id);
+  if(!f) return;
+  const file = f.hasFile ? await safeGet(k('facture-file:'+id)) : null;
+  let html = `<h3 class="detail-title">Détail de la facture</h3>`;
+  if(file && file.startsWith('data:image')) html += `<img class="detail-img" src="${file}" alt="Facture">`;
+  html += `<div class="detail-rows">
+    <div class="drow"><span>Date</span><b>${f.date}</b></div>
+    <div class="drow"><span>Type</span><b>${f.type}</b></div>
+    <div class="drow"><span>Statut</span><b>${f.statut}</b></div>
+    <div class="drow"><span>Montant</span><b>${fmtMoney(f.montant)}</b></div>
+    <div class="drow"><span>Fichier</span><b>${f.fileName ? escapeHtml(f.fileName) : '—'}</b></div>
+  </div>`;
+  if(file){ html += `<p style="margin-top:14px"><a class="file-link" href="${file}" target="_blank" rel="noopener">Ouvrir le fichier dans un nouvel onglet</a></p>`; }
+  else if(f.fileName){ html += `<p class="status-msg err" style="margin-top:14px">Fichier trop volumineux — non sauvegardé, seul le nom a été conservé.</p>`; }
+  openDetail(html);
+}
+
+async function deleteInvoice(id){
+  invoices = invoices.filter(f=>f.id!==id);
+  await safeSet(k('factures-index'), JSON.stringify(invoices));
+  await safeDelete(k('facture-file:'+id));
+  renderInvoices(); renderDashboard(); renderHistorique();
+}
+
+// ================= KM =================
+let pendingKmBefore = null;
+let pendingKmAfter = null;
+const kmPhotoStatus = document.getElementById('kmPhotoStatus');
+
+function handleKmPhoto(file, which){
+  if(!file) return;
+  kmPhotoStatus.textContent = 'Lecture de la photo…';
+  kmPhotoStatus.className = 'status-msg';
+  const reader = new FileReader();
+  reader.onload = e=>{
+    compressImage(e.target.result, 1000, 0.7).then(compressed=>{
+      if(which==='before'){ pendingKmBefore = compressed; } else { pendingKmAfter = compressed; }
+      const parts = [];
+      if(pendingKmBefore) parts.push('avant ✓');
+      if(pendingKmAfter) parts.push('après ✓');
+      kmPhotoStatus.textContent = 'Photo(s) prête(s) : ' + parts.join(', ');
+    });
+  };
+  reader.readAsDataURL(file);
+}
+document.getElementById('kmPhotoBefore').addEventListener('change', e=>handleKmPhoto(e.target.files[0], 'before'));
+document.getElementById('kmPhotoAfter').addEventListener('change', e=>handleKmPhoto(e.target.files[0], 'after'));
+
+document.getElementById('kmSaveBtn').addEventListener('click', async ()=>{
+  const km = parseFloat(document.getElementById('kmValue').value);
+  if(!km){ return; }
+  const id = uid();
+  const record = {
+    id,
+    date: document.getElementById('kmDate').value || new Date().toISOString().slice(0,10),
+    km,
+    motif: document.getElementById('kmMotif').value || '(sans motif)',
+    hasBefore: !!pendingKmBefore,
+    hasAfter: !!pendingKmAfter
+  };
+  if(pendingKmBefore) await safeSet(k('trip-img-before:'+id), pendingKmBefore.dataUrl);
+  if(pendingKmAfter) await safeSet(k('trip-img-after:'+id), pendingKmAfter.dataUrl);
+  trips.unshift(record);
+  await safeSet(k('trajets'), JSON.stringify(trips));
+  ['kmDate','kmValue','kmMotif'].forEach(i=>document.getElementById(i).value='');
+  pendingKmBefore = null; pendingKmAfter = null; kmPhotoStatus.textContent = '';
+  renderKm(); renderDashboard(); renderHistorique();
+});
+
+document.getElementById('kmToggleListBtn').addEventListener('click', ()=>{
+  tripListShown = !tripListShown;
+  document.getElementById('kmListWrap').style.display = tripListShown ? 'block' : 'none';
+  document.getElementById('kmToggleListBtn').textContent = tripListShown ? 'Masquer les trajets' : 'Voir les trajets';
+});
+document.getElementById('kmMoreBtn').addEventListener('click', ()=>{ tripVisible += 10; renderKmList(); });
+
+async function viewTripImg(id, which){
+  const img = await safeGet('trip-img-'+which+':'+id);
+  if(img){ window.open(img, '_blank'); } else { alert('Photo non disponible.'); }
+}
+
+function renderKm(){
+  const currentYear = new Date().getFullYear().toString();
+  const kmThisYear = trips.filter(t=>t.date.slice(0,4)===currentYear).reduce((s,t)=>s+t.km,0);
+  const kmAll = trips.reduce((s,t)=>s+t.km,0);
+  document.getElementById('sumKmYear').textContent = kmThisYear.toLocaleString('fr-CA') + ' km';
+  document.getElementById('sumKmAll').textContent = kmAll.toLocaleString('fr-CA') + ' km';
+  renderKmList();
+}
+
+function renderKmList(){
+  const table = document.getElementById('kmTable');
+  const empty = document.getElementById('kmEmpty');
+  const tbody = document.getElementById('kmTbody');
+  const moreBtn = document.getElementById('kmMoreBtn');
+  const totals = document.getElementById('kmTotals');
+  if(trips.length===0){
+    table.style.display='none'; empty.style.display='block'; moreBtn.style.display='none'; totals.style.display='none';
+    return;
+  }
+  empty.style.display='none'; table.style.display='table'; totals.style.display='flex';
+  const sorted = [...trips].sort((a,b)=>b.date.localeCompare(a.date));
+  const shown = sorted.slice(0, tripVisible);
+  tbody.innerHTML = shown.map(t=>{
+    return `<tr>
+      <td class="mono">${t.date}</td>
+      <td>${escapeHtml(t.motif)}</td>
+      <td class="mono num">${t.km}</td>
+      <td>
+        <button class="icon-btn" onclick="showTripDetail('${t.id}')" title="Détails">🔍</button>
+        <button class="icon-btn del" onclick="confirmDeleteTrip('${t.id}')" title="Supprimer">✕</button>
+      </td>
+    </tr>`;
+  }).join('');
+  moreBtn.style.display = sorted.length > tripVisible ? 'inline-block' : 'none';
+  const grandTotal = trips.reduce((s,t)=>s+t.km,0);
+  totals.innerHTML = `<div class="t">Total tous les temps<b>${grandTotal.toLocaleString('fr-CA')} km</b></div>`;
+}
+
+async function showTripDetail(id){
+  const t = trips.find(x=>x.id===id);
+  if(!t) return;
+  const before = t.hasBefore ? await safeGet(k('trip-img-before:'+id)) : null;
+  const after = t.hasAfter ? await safeGet(k('trip-img-after:'+id)) : null;
+  let html = `<h3 class="detail-title">Détail du trajet</h3>`;
+  if(before || after){
+    html += `<div class="detail-imgs-row">`;
+    if(before) html += `<div><div class="status-msg" style="margin:0 0 4px">Avant</div><img src="${before}" alt="Avant"></div>`;
+    if(after) html += `<div><div class="status-msg" style="margin:0 0 4px">Après</div><img src="${after}" alt="Après"></div>`;
+    html += `</div>`;
+  }
+  html += `<div class="detail-rows">
+    <div class="drow"><span>Date</span><b>${t.date}</b></div>
+    <div class="drow"><span>Kilomètres</span><b>${t.km} km</b></div>
+    <div class="drow"><span>Motif</span><b>${escapeHtml(t.motif)}</b></div>
+  </div>`;
+  openDetail(html);
+}
+
+async function deleteTrip(id){
+  trips = trips.filter(t=>t.id!==id);
+  await safeSet(k('trajets'), JSON.stringify(trips));
+  await safeDelete(k('trip-img-before:'+id));
+  await safeDelete(k('trip-img-after:'+id));
+  renderKm(); renderDashboard(); renderHistorique();
+}
+
+// ================= DASHBOARD =================
+const reserveSlider = document.getElementById('reserveSlider');
+reserveSlider.addEventListener('input', renderDashboard);
+
+document.querySelectorAll('#revenuToggle .mt-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    revenuMode = btn.dataset.mode;
+    document.querySelectorAll('#revenuToggle .mt-btn').forEach(b=>b.classList.toggle('active', b===btn));
+    renderDashboard();
+  });
+});
+
+function renderDashboard(){
+  const currentYear = new Date().getFullYear().toString();
+  const invoicesThisYear = invoices.filter(f=>f.date.slice(0,4)===currentYear);
+  const expensesThisYear = expenses.filter(e=>e.date.slice(0,4)===currentYear);
+  const revenuPaye = invoicesThisYear.filter(f=>f.statut==='Payée').reduce((s,f)=>s+f.montant,0);
+  const revenuTotal = invoicesThisYear.reduce((s,f)=>s+f.montant,0);
+  const revenuEnAttente = revenuTotal - revenuPaye;
+  const revenuAffiche = revenuMode==='payees' ? revenuPaye : revenuTotal;
+  const totalDepenses = expensesThisYear.reduce((s,e)=>s+e.montant,0);
+  const kmCetteAnnee = trips.filter(t=>t.date.slice(0,4)===currentYear).reduce((s,t)=>s+t.km,0);
+  const kmDeduction = kmCetteAnnee * KM_RATE;
+
+  document.getElementById('dashRevenu').textContent = fmtMoney(revenuAffiche);
+  document.getElementById('dashRevenuNote').textContent = revenuMode==='payees'
+    ? (revenuEnAttente>0 ? `+ ${fmtMoney(revenuEnAttente)} en attente (${currentYear})` : `${invoicesThisYear.length} facture(s) en ${currentYear}`)
+    : `dont ${fmtMoney(revenuPaye)} déjà payé (${currentYear})`;
+  document.getElementById('dashDepenses').textContent = fmtMoney(totalDepenses);
+  document.getElementById('dashDepensesNote').textContent = `${expensesThisYear.length} reçu(s) en ${currentYear}`;
+  document.getElementById('dashKm').textContent = kmCetteAnnee.toLocaleString('fr-CA') + ' km';
+  document.getElementById('dashKmNote').textContent = `≈ ${fmtMoney(kmDeduction)} de dépense de véhicule (repère)`;
+
+  const net = Math.max(0, revenuAffiche - totalDepenses - kmDeduction);
+  document.getElementById('dashNet').textContent = fmtMoney(net);
+
+  const pct = parseInt(reserveSlider.value,10);
+  document.getElementById('reservePct').textContent = pct + ' %';
+  document.getElementById('reserveAmount').textContent = fmtMoney(net * pct/100);
+}
+
+// ================= HISTORIQUE =================
+function getAllYears(){
+  const years = new Set();
+  invoices.forEach(f=>years.add(f.date.slice(0,4)));
+  expenses.forEach(e=>years.add(e.date.slice(0,4)));
+  trips.forEach(t=>years.add(t.date.slice(0,4)));
+  years.add(new Date().getFullYear().toString());
+  return Array.from(years).sort().reverse();
+}
+
+function computeTotals(invY, expY, kmY){
+  const revenuPaye = invY.filter(f=>f.statut==='Payée').reduce((s,f)=>s+f.montant,0);
+  const revenuTotal = invY.reduce((s,f)=>s+f.montant,0);
+  const depenses = expY.reduce((s,e)=>s+e.montant,0);
+  const kmDeduction = kmY * KM_RATE;
+  const net = Math.max(0, revenuPaye - depenses - kmDeduction);
+  return { revenuPaye, revenuTotal, depenses, km:kmY, net, nbFactures:invY.length, nbDepenses:expY.length };
+}
+
+function computeTotalsForYear(year){
+  const invY = invoices.filter(f=>f.date.slice(0,4)===year);
+  const expY = expenses.filter(e=>e.date.slice(0,4)===year);
+  const kmY = trips.filter(t=>t.date.slice(0,4)===year).reduce((s,t)=>s+t.km,0);
+  return computeTotals(invY, expY, kmY);
+}
+
+function computeTotalsAsOf(dateStr){
+  const year = dateStr.slice(0,4);
+  const invY = invoices.filter(f=>f.date.slice(0,4)===year && f.date<=dateStr);
+  const expY = expenses.filter(e=>e.date.slice(0,4)===year && e.date<=dateStr);
+  const kmY = trips.filter(t=>t.date.slice(0,4)===year && t.date<=dateStr).reduce((s,t)=>s+t.km,0);
+  return computeTotals(invY, expY, kmY);
+}
+
+document.querySelectorAll('#histModeToggle .mt-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#histModeToggle .mt-btn').forEach(b=>b.classList.toggle('active', b===btn));
+    const mode = btn.dataset.mode;
+    document.getElementById('histByYear').style.display = mode==='annee' ? 'block' : 'none';
+    document.getElementById('histByDate').style.display = mode==='date' ? 'block' : 'none';
+    renderHistorique();
+  });
+});
+document.getElementById('histYearSelect').addEventListener('change', renderHistorique);
+document.getElementById('histDateInput').addEventListener('change', renderHistorique);
+
+function populateHistYears(){
+  const sel = document.getElementById('histYearSelect');
+  const years = getAllYears();
+  const current = sel.value;
+  sel.innerHTML = years.map(y=>`<option value="${y}">${y}</option>`).join('');
+  if(years.includes(current)) sel.value = current;
+}
+
+function renderHistorique(){
+  populateHistYears();
+  const mode = document.querySelector('#histModeToggle .mt-btn.active').dataset.mode;
+  let stats;
+  if(mode==='annee'){
+    const year = document.getElementById('histYearSelect').value || new Date().getFullYear().toString();
+    stats = computeTotalsForYear(year);
+    document.getElementById('histRevenuNote').textContent = `${stats.nbFactures} facture(s) en ${year}`;
+    document.getElementById('histDepensesNote').textContent = `${stats.nbDepenses} reçu(s) en ${year}`;
+    document.getElementById('histKmNote').textContent = `Année ${year}`;
+    document.getElementById('histNetNote').textContent = `Revenus payés − dépenses − km (${year})`;
+  } else {
+    const dateVal = document.getElementById('histDateInput').value || new Date().toISOString().slice(0,10);
+    stats = computeTotalsAsOf(dateVal);
+    const year = dateVal.slice(0,4);
+    document.getElementById('histRevenuNote').textContent = `Du 1er janvier au ${dateVal}`;
+    document.getElementById('histDepensesNote').textContent = `Cumulé depuis janvier ${year}`;
+    document.getElementById('histKmNote').textContent = `Cumulé depuis janvier ${year}`;
+    document.getElementById('histNetNote').textContent = `Cumulé au ${dateVal}`;
+  }
+  document.getElementById('histRevenu').textContent = fmtMoney(stats.revenuPaye);
+  document.getElementById('histDepenses').textContent = fmtMoney(stats.depenses);
+  document.getElementById('histKm').textContent = stats.km.toLocaleString('fr-CA') + ' km';
+  document.getElementById('histNet').textContent = fmtMoney(stats.net);
+}
+
+// expose for inline handlers
+window.showExpenseDetail = showExpenseDetail;
+window.confirmDeleteExpense = confirmDeleteExpense;
+window.showInvoiceDetail = showInvoiceDetail;
+window.confirmDeleteInvoice = confirmDeleteInvoice;
+window.markInvoicePaid = markInvoicePaid;
+window.showTripDetail = showTripDetail;
+window.confirmDeleteTrip = confirmDeleteTrip;
+window.viewTripImg = viewTripImg;
+
+updateContextUI();
+(async function init(){
+  await migrateLegacyData();
+  await loadAll();
+})();
+</script>
+</body>
+</html>

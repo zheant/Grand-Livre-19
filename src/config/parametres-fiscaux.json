@@ -1,0 +1,39 @@
+{
+  "_todo": {
+    "paliersFederal": "TODO — paliers d'imposition fédéraux (taux marginaux par tranche de revenu imposable). Format : [{\"jusqua\": <plafond de la tranche ou null pour la dernière>, \"taux\": <décimal>}, ...] en ordre croissant. Source : Agence du revenu du Canada, arc.gc.ca.",
+    "paliersQuebec": "TODO — paliers d'imposition provinciaux, même format que paliersFederal. Source : Revenu Québec, revenuquebec.ca.",
+    "creditPersonnelFederal": "TODO — montant personnel de base fédéral (en dollars, pas en cents). Source : ARC, feuille TD1.",
+    "creditPersonnelQuebec": "TODO — montant personnel de base québécois (en dollars). Source : Revenu Québec, formulaire TP-1015.3.",
+    "rrq": "TODO — cotisations RRQ pour travailleur autonome : taux combiné (employé+employeur), maximum des gains admissibles (MGA), exemption de base. Source : Retraite Québec.",
+    "rqap": "TODO — cotisation au Régime québécois d'assurance parentale pour travailleur autonome : taux, maximum du revenu assurable. Source : Revenu Québec / RQAP.",
+    "ramq": "TODO — cotisation au régime d'assurance médicaments du Québec, si applicable (non requis si couvert par une assurance collective). Source : Revenu Québec.",
+    "tauxKmRepere": "Valeur reprise telle quelle du prototype (0,70 $/km) — à reconfirmer chaque année contre le taux publié par l'ARC pour les frais de véhicule à moteur.",
+    "seuilInscriptionTaxes": "30 000 $ — seuil de petit fournisseur, stable depuis plusieurs années (ARC/Revenu Québec) — à reconfirmer.",
+    "abattementQuebec": "16,5 % — abattement du Québec, stable depuis plusieurs années — à reconfirmer."
+  },
+  "2026": {
+    "tps": 0.05,
+    "tvq": 0.09975,
+    "seuilInscriptionTaxes": 30000,
+    "paliersFederal": [],
+    "paliersQuebec": [],
+    "abattementQuebec": 0.165,
+    "creditPersonnelFederal": null,
+    "creditPersonnelQuebec": null,
+    "rrq": {
+      "tauxTravailleurAutonome": null,
+      "maximumGainsAdmissibles": null,
+      "exemptionBase": null
+    },
+    "rqap": {
+      "taux": null,
+      "maximumRevenuAssurable": null
+    },
+    "ramq": {
+      "taux": null,
+      "seuilExemption": null,
+      "cotisationMaximale": null
+    },
+    "tauxKmRepere": 0.7
+  }
+}
