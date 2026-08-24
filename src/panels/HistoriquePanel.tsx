@@ -168,10 +168,36 @@ export function HistoriquePanel({
 
   return (
     <section className="panel">
-      <div className="label-row" style={{ marginBottom: 10, flexWrap: 'wrap', gap: 12 }}>
-        <h2 className="panel-title" style={{ margin: 0 }}>
-          Historique financier
-        </h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12, marginBottom: 20 }}>
+        <div>
+          <h2 className="panel-title" style={{ margin: 0 }}>
+            Historique financier
+          </h2>
+          <div className="mini-toggle" style={{ marginTop: 8 }}>
+            <button
+              type="button"
+              className={`mt-btn${mode === 'annee' ? ' active' : ''}`}
+              onClick={() => setMode('annee')}
+            >
+              Par année
+            </button>
+            <button
+              type="button"
+              className={`mt-btn${mode === 'mois' ? ' active' : ''}`}
+              onClick={() => setMode('mois')}
+            >
+              Par mois
+            </button>
+            <button
+              type="button"
+              className={`mt-btn${mode === 'date' ? ' active' : ''}`}
+              onClick={() => setMode('date')}
+            >
+              À une date précise
+            </button>
+          </div>
+        </div>
+
         <div className="field" style={{ flex: '0 0 auto', minWidth: 150, gap: 3 }}>
           <label>{mode === 'annee' ? 'Année' : mode === 'mois' ? 'Mois' : "Jusqu'au"}</label>
           {mode === 'annee' && (
@@ -188,30 +214,6 @@ export function HistoriquePanel({
             <input type="date" value={dateAsOf} onChange={(e) => setDateAsOf(e.target.value)} />
           )}
         </div>
-      </div>
-
-      <div className="mini-toggle" style={{ marginBottom: 14 }}>
-        <button
-          type="button"
-          className={`mt-btn${mode === 'annee' ? ' active' : ''}`}
-          onClick={() => setMode('annee')}
-        >
-          Par année
-        </button>
-        <button
-          type="button"
-          className={`mt-btn${mode === 'mois' ? ' active' : ''}`}
-          onClick={() => setMode('mois')}
-        >
-          Par mois
-        </button>
-        <button
-          type="button"
-          className={`mt-btn${mode === 'date' ? ' active' : ''}`}
-          onClick={() => setMode('date')}
-        >
-          À une date précise
-        </button>
       </div>
 
       <div className="cards">
