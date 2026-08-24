@@ -16,11 +16,11 @@ const DENOMINATIONS: Denomination[] = [
   { valueDollars: 10, gradientId: 'tierCopper', stroke: '#5C3216' },
   { valueDollars: 100, gradientId: 'tierSilver', stroke: '#5A5F66' },
   { valueDollars: 1_000, gradientId: 'tierGold', stroke: '#8A6D1F' },
-  { valueDollars: 10_000, gradientId: 'tierDiamond', stroke: '#1F6E8C', gem: true },
-  { valueDollars: 100_000, gradientId: 'tierRuby', stroke: '#5C0E22', gem: true },
+  { valueDollars: 100_000, gradientId: 'tierDiamond', stroke: '#1F6E8C', gem: true },
+  { valueDollars: 1_000_000, gradientId: 'tierRuby', stroke: '#5C0E22', gem: true },
 ]
 
-const MAX_STACK_HEIGHT = 5
+const MAX_STACK_HEIGHT = 10
 
 function decompose(totalDollars: number): number[] {
   let remaining = Math.max(0, Math.floor(totalDollars))
