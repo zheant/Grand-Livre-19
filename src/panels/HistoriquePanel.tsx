@@ -168,9 +168,11 @@ export function HistoriquePanel({
 
   return (
     <section className="panel">
-      <h2 className="panel-title">Historique financier</h2>
+      <h2 className="panel-title" style={{ marginBottom: 10 }}>
+        Historique financier
+      </h2>
 
-      <div className="label-row" style={{ marginBottom: 20, flexWrap: 'wrap', gap: 12, alignItems: 'flex-end' }}>
+      <div className="label-row" style={{ marginBottom: 14, flexWrap: 'wrap', gap: 12, alignItems: 'center' }}>
         <div className="mini-toggle">
           <button
             type="button"
@@ -195,8 +197,8 @@ export function HistoriquePanel({
           </button>
         </div>
 
-        <div className="field" style={{ flex: '0 0 auto', minWidth: 150 }}>
-          <label>Année, mois, jusqu'au</label>
+        <div className="field" style={{ flex: '0 0 auto', minWidth: 150, gap: 3 }}>
+          <label>{mode === 'annee' ? 'Année' : mode === 'mois' ? 'Mois' : "Jusqu'au"}</label>
           {mode === 'annee' && (
             <select value={selectedYear} onChange={(e) => setYear(e.target.value)}>
               {years.map((y) => (
