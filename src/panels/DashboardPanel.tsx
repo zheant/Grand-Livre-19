@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { CoinPile } from '../components/CoinPile'
 import type { AppSettings } from '../hooks/useSettings'
 import { formatCents, formatKm, toCents } from '../lib/money'
 import { getTauxKmRepere } from '../lib/parametresFiscaux'
@@ -37,6 +38,10 @@ export function DashboardPanel({ ledger, settings }: { ledger: Ledger; settings:
   // mode d'affichage choisi ci-dessus.
   const netCents = Math.max(0, revenuTotalCents - totalDepensesCents - kmDeductionCents)
   const reserveSimpleCents = Math.round((netCents * reservePct) / 100)
+
+  const revenuPayeTousLesTemps = invoices
+    .filter((f) => f.statut === 'Payée')
+    .reduce((s, f) => s + f.montantCents, 0)
 
   return (
     <section className="panel">
@@ -110,6 +115,11 @@ export function DashboardPanel({ ledger, settings }: { ledger: Ledger; settings:
           </div>
         </div>
         <div className="ramount mono">{formatCents(reserveSimpleCents)}</div>
+      </div>
+
+      <div className="review-box" style={{ margin: 0 }}>
+        <div className="rb-title">Revenus encaissés (tous les temps)</div>
+        <CoinPile totalCents={revenuPayeTousLesTemps} />
       </div>
     </section>
   )

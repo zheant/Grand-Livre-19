@@ -4,7 +4,6 @@ import { saveBlobWithPicker } from '../lib/download'
 import { formatCents, formatKm, toCents } from '../lib/money'
 import { getTauxKmRepere } from '../lib/parametresFiscaux'
 import { importerSauvegarde, parseBackupFile, type BackupFile } from '../lib/backup'
-import { CoinPile } from '../components/CoinPile'
 import { ConfirmModal } from '../components/ConfirmModal'
 import type { useLedger } from '../hooks/useLedger'
 import type { useDocuments } from '../hooks/useDocuments'
@@ -133,10 +132,6 @@ export function HistoriquePanel({
 
   const selectedYear = years.includes(year) ? year : (years[0] ?? year)
 
-  const revenuPayeTousLesTemps = invoices
-    .filter((f) => f.statut === 'Payée')
-    .reduce((s, f) => s + f.montantCents, 0)
-
   const stats = useMemo(() => {
     if (mode === 'annee') {
       const invY = invoices.filter((f) => f.date.slice(0, 4) === selectedYear)
@@ -173,60 +168,47 @@ export function HistoriquePanel({
 
   return (
     <section className="panel">
-      <div className="label-row" style={{ marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
-        <h2 className="panel-title" style={{ margin: 0 }}>
-          Historique financier
-        </h2>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-          <div className="mini-toggle">
-            <button
-              type="button"
-              className={`mt-btn${mode === 'annee' ? ' active' : ''}`}
-              onClick={() => setMode('annee')}
-            >
-              Par année
-            </button>
-            <button
-              type="button"
-              className={`mt-btn${mode === 'mois' ? ' active' : ''}`}
-              onClick={() => setMode('mois')}
-            >
-              Par mois
-            </button>
-            <button
-              type="button"
-              className={`mt-btn${mode === 'date' ? ' active' : ''}`}
-              onClick={() => setMode('date')}
-            >
-              À une date précise
-            </button>
-          </div>
+      <h2 className="panel-title">Historique financier</h2>
 
+      <div className="label-row" style={{ marginBottom: 20, flexWrap: 'wrap', gap: 12, alignItems: 'flex-end' }}>
+        <div className="mini-toggle">
+          <button
+            type="button"
+            className={`mt-btn${mode === 'annee' ? ' active' : ''}`}
+            onClick={() => setMode('annee')}
+          >
+            Par année
+          </button>
+          <button
+            type="button"
+            className={`mt-btn${mode === 'mois' ? ' active' : ''}`}
+            onClick={() => setMode('mois')}
+          >
+            Par mois
+          </button>
+          <button
+            type="button"
+            className={`mt-btn${mode === 'date' ? ' active' : ''}`}
+            onClick={() => setMode('date')}
+          >
+            À une date précise
+          </button>
+        </div>
+
+        <div className="field" style={{ flex: '0 0 auto', minWidth: 150 }}>
+          <label>Année, mois, jusqu'au</label>
           {mode === 'annee' && (
-            <div className="field" style={{ flex: '0 0 auto', minWidth: 110 }}>
-              <select value={selectedYear} onChange={(e) => setYear(e.target.value)} aria-label="Année">
-                {years.map((y) => (
-                  <option key={y} value={y}>
-                    {y}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <select value={selectedYear} onChange={(e) => setYear(e.target.value)}>
+              {years.map((y) => (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              ))}
+            </select>
           )}
-          {mode === 'mois' && (
-            <div className="field" style={{ flex: '0 0 auto', minWidth: 150 }}>
-              <input type="month" value={month} onChange={(e) => setMonth(e.target.value)} aria-label="Mois" />
-            </div>
-          )}
+          {mode === 'mois' && <input type="month" value={month} onChange={(e) => setMonth(e.target.value)} />}
           {mode === 'date' && (
-            <div className="field" style={{ flex: '0 0 auto', minWidth: 150 }}>
-              <input
-                type="date"
-                value={dateAsOf}
-                onChange={(e) => setDateAsOf(e.target.value)}
-                aria-label="Totaux cumulés jusqu'au"
-              />
-            </div>
+            <input type="date" value={dateAsOf} onChange={(e) => setDateAsOf(e.target.value)} />
           )}
         </div>
       </div>
@@ -254,35 +236,28 @@ export function HistoriquePanel({
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 20 }}>
-        <div className="review-box" style={{ flex: '1 1 280px', margin: 0 }}>
-          <div className="rb-title">Exporter les données</div>
-          <div className="form-row">
-            <div className="field" style={{ maxWidth: 200 }}>
-              <label>Du</label>
-              <input type="date" value={exportDebut} onChange={(e) => setExportDebut(e.target.value)} />
-            </div>
-            <div className="field" style={{ maxWidth: 200 }}>
-              <label>Au</label>
-              <input type="date" value={exportFin} onChange={(e) => setExportFin(e.target.value)} />
-            </div>
+      <div className="review-box" style={{ marginTop: 20 }}>
+        <div className="rb-title">Exporter les données</div>
+        <div className="form-row">
+          <div className="field" style={{ maxWidth: 200 }}>
+            <label>Du</label>
+            <input type="date" value={exportDebut} onChange={(e) => setExportDebut(e.target.value)} />
           </div>
-          <div className="btn-row">
+          <div className="field" style={{ maxWidth: 200 }}>
+            <label>Au</label>
+            <input type="date" value={exportFin} onChange={(e) => setExportFin(e.target.value)} />
+          </div>
+          <div style={{ alignSelf: 'flex-end' }}>
             <button type="button" className="btn" disabled={exportState === 'busy'} onClick={handleExport}>
               {exportState === 'busy' ? 'Préparation du fichier…' : '📦 Exporter les données'}
             </button>
           </div>
-          {exportState === 'error' && (
-            <p className="status-msg err">
-              L'export a échoué — réessaie, et si ça persiste, vérifie la console du navigateur.
-            </p>
-          )}
         </div>
-
-        <div className="review-box" style={{ flex: '1 1 220px', margin: 0 }}>
-          <div className="rb-title">Revenus encaissés (tous les temps)</div>
-          <CoinPile totalCents={revenuPayeTousLesTemps} />
-        </div>
+        {exportState === 'error' && (
+          <p className="status-msg err">
+            L'export a échoué — réessaie, et si ça persiste, vérifie la console du navigateur.
+          </p>
+        )}
       </div>
 
       <h3
