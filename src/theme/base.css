@@ -80,7 +80,7 @@ h2.panel-title {
 .mini-toggle .mt-btn:only-child { border-radius: var(--radius-pill); }
 .mini-toggle .mt-btn.active { background: var(--moss); color: var(--on-accent); }
 .card .value {
-  font-family: var(--font-mono); font-size: clamp(15px, 9cqw, 26px); font-weight: 600; margin-top: 6px;
+  font-family: var(--font-mono); font-size: clamp(15px, min(19px, 10cqw), 19px); font-weight: 600; margin-top: 6px;
   overflow-wrap: break-word;
 }
 .card.income .value { color: var(--moss); }
@@ -169,7 +169,7 @@ table.ledger tr:hover td { background: var(--tint); }
   flex: 1; min-width: 150px; container-type: inline-size;
 }
 .ssum-label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--ink-soft); font-weight: 600; margin-bottom: 5px; }
-.ssum-value { font-family: var(--font-mono); font-size: clamp(13px, 10cqw, 19px); font-weight: 600; color: var(--forest); overflow-wrap: break-word; }
+.ssum-value { font-family: var(--font-mono); font-size: clamp(13px, min(19px, 13cqw), 19px); font-weight: 600; color: var(--forest); overflow-wrap: break-word; }
 
 .totals-strip {
   display: flex; gap: 22px; margin-top: 16px; padding-top: 14px; border-top: 1.5px solid var(--forest);

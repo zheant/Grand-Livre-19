@@ -121,7 +121,7 @@ export function DepensesPanel({ ledger, settings }: { ledger: Ledger; settings: 
       <h2 className="panel-title">Dépenses</h2>
 
       <div className="section-summary">
-        <div className="ssum-item" style={{ flex: '0 1 140px', padding: '10px 10px', textAlign: 'center' }}>
+        <div className="ssum-item" style={{ padding: '10px 10px', textAlign: 'center' }}>
           <div
             className="label-row"
             style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6 }}
@@ -150,7 +150,7 @@ export function DepensesPanel({ ledger, settings }: { ledger: Ledger; settings: 
             {formatCents(summaryMode === 'montant' ? totalMontant : totalTaxes)}
           </span>
         </div>
-        <div className="ssum-item" style={{ flex: '0 1 160px' }}>
+        <div className="ssum-item">
           <span className="ssum-label">Reçus enregistrés</span>
           <span className="ssum-value">{expenses.length}</span>
         </div>
