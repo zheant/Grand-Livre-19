@@ -1,4 +1,14 @@
-export type ThemeId = 'classique' | 'vegas' | 'royal' | 'slots' | 'blackjack' | 'bubblegum' | 'natural'
+export type ThemeId =
+  | 'classique'
+  | 'vegas'
+  | 'royal'
+  | 'slots'
+  | 'blackjack'
+  | 'bubblegum'
+  | 'natural'
+  | 'quebec'
+  | 'cosmos'
+  | 'terminal'
 
 const STORAGE_KEY = 'livre-affaire-theme'
 
@@ -10,6 +20,9 @@ export const THEMES: { id: ThemeId; label: string }[] = [
   { id: 'blackjack', label: 'Blackjack' },
   { id: 'bubblegum', label: 'Bubble gum' },
   { id: 'natural', label: 'Naturel' },
+  { id: 'quebec', label: 'Québec indépendant' },
+  { id: 'cosmos', label: 'Cosmos' },
+  { id: 'terminal', label: 'Terminal rétro' },
 ]
 
 export function getStoredTheme(): ThemeId {
