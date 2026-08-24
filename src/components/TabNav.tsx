@@ -9,7 +9,6 @@ export function TabNav({
 }) {
   return (
     <>
-      <div className="nav-label">Menu</div>
       <nav className="tabs">
         {TABS.map((tab) => (
           <button

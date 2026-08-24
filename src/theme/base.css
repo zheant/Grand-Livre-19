@@ -39,7 +39,6 @@ nav.tabs { display: flex; gap: 6px; margin: 6px 0 26px; flex-wrap: wrap; }
 }
 .ctx-btn.active { background: var(--forest); color: var(--on-accent); border-color: var(--forest); }
 .ctx-btn:hover:not(.active) { background: var(--hover-bg); }
-.nav-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.4px; color: var(--ink-soft); font-weight: 600; margin-top: 22px; }
 nav.tabs button {
   font-family: var(--font-body); font-weight: 600; font-size: 13px;
   background: var(--paper-2); color: var(--ink-soft);
@@ -243,8 +242,6 @@ a.file-link { color: var(--forest); font-weight: 600; text-decoration: underline
   color: inherit;
 }
 .cat-chip button:hover { opacity: 1; color: var(--rust); }
-
-.theme-pick-row { display: flex; flex-wrap: wrap; gap: 6px; }
 
 @media (max-width: 600px) {
   header.top { flex-direction: column; gap: 6px; }

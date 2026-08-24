@@ -129,8 +129,9 @@ function SettingsForm({
       } else {
         setUpdateState('upToDate')
       }
-    } catch {
-      setUpdateError('Impossible de vérifier les mises à jour — vérifie ta connexion internet.')
+    } catch (err) {
+      const detail = err instanceof Error ? err.message : String(err)
+      setUpdateError(`Impossible de vérifier les mises à jour : ${detail}`)
       setUpdateState('error')
     }
   }
@@ -154,20 +155,65 @@ function SettingsForm({
     <div>
       <h3 className="detail-title">Paramètres</h3>
 
+      {isTauriRuntime() && (
+        <section style={{ marginBottom: 22 }}>
+          <div className="settings-section-title">Mises à jour</div>
+          {appVersion && (
+            <p className="status-msg" style={{ margin: '2px 0 8px' }}>
+              Version actuelle : <b className="mono">{appVersion}</b>
+            </p>
+          )}
+          {(updateState === 'idle' || updateState === 'upToDate' || updateState === 'error') && (
+            <button type="button" className="btn secondary btn-sm" onClick={handleCheckUpdate}>
+              Vérifier les mises à jour
+            </button>
+          )}
+          {updateState === 'checking' && <p className="status-msg">Vérification…</p>}
+          {updateState === 'upToDate' && (
+            <p className="status-msg" style={{ marginTop: 6 }}>
+              ✓ Tu as déjà la dernière version.
+            </p>
+          )}
+          {updateState === 'available' && updateInfo && (
+            <>
+              <p className="status-msg" style={{ marginTop: 6 }}>
+                Nouvelle version disponible : <b>{updateInfo.version}</b>
+              </p>
+              {updateInfo.notes && (
+                <p className="status-msg" style={{ whiteSpace: 'pre-wrap' }}>
+                  {updateInfo.notes}
+                </p>
+              )}
+              <div className="btn-row">
+                <button type="button" className="btn btn-sm" onClick={handleInstallUpdate}>
+                  Installer et redémarrer
+                </button>
+              </div>
+            </>
+          )}
+          {updateState === 'downloading' && (
+            <p className="status-msg" style={{ marginTop: 6 }}>
+              Téléchargement{updateProgress != null ? ` : ${updateProgress} %` : '…'}
+            </p>
+          )}
+          {updateState === 'error' && updateError && (
+            <p className="status-msg err" style={{ marginTop: 6 }}>
+              {updateError}
+            </p>
+          )}
+        </section>
+      )}
+
       <section style={{ marginBottom: 22 }}>
         <div className="settings-section-title">Thème</div>
-        <div className="theme-pick-row">
-          {THEMES.map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              className="btn secondary btn-sm"
-              onClick={() => chooseTheme(t.id)}
-            >
-              {t.id === theme ? '✓ ' : ''}
-              {t.label}
-            </button>
-          ))}
+        <div className="field" style={{ maxWidth: 220 }}>
+          <select value={theme} onChange={(e) => chooseTheme(e.target.value as ThemeId)}>
+            {THEMES.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.label}
+              </option>
+            ))}
+          </select>
         </div>
       </section>
 
@@ -181,11 +227,11 @@ function SettingsForm({
         </div>
         <div className="form-row">
           <div className="field">
-            <label>Nom du contexte « {CONTEXT_NAMES.geo360} »</label>
+            <label>Nom du contexte 1</label>
             <input type="text" value={geo360Name} onChange={(e) => setGeo360Name(e.target.value)} />
           </div>
           <div className="field">
-            <label>Nom du contexte « {CONTEXT_NAMES.manutention} »</label>
+            <label>Nom du contexte 2</label>
             <input
               type="text"
               value={manutentionName}
@@ -277,55 +323,6 @@ function SettingsForm({
           </button>
         </div>
       </section>
-
-      {isTauriRuntime() && (
-        <section style={{ marginTop: 22 }}>
-          <div className="settings-section-title">Mises à jour</div>
-          {appVersion && (
-            <p className="status-msg" style={{ margin: '2px 0 8px' }}>
-              Version actuelle : <b className="mono">{appVersion}</b>
-            </p>
-          )}
-          {(updateState === 'idle' || updateState === 'upToDate' || updateState === 'error') && (
-            <button type="button" className="btn secondary btn-sm" onClick={handleCheckUpdate}>
-              Vérifier les mises à jour
-            </button>
-          )}
-          {updateState === 'checking' && <p className="status-msg">Vérification…</p>}
-          {updateState === 'upToDate' && (
-            <p className="status-msg" style={{ marginTop: 6 }}>
-              ✓ Tu as déjà la dernière version.
-            </p>
-          )}
-          {updateState === 'available' && updateInfo && (
-            <>
-              <p className="status-msg" style={{ marginTop: 6 }}>
-                Nouvelle version disponible : <b>{updateInfo.version}</b>
-              </p>
-              {updateInfo.notes && (
-                <p className="status-msg" style={{ whiteSpace: 'pre-wrap' }}>
-                  {updateInfo.notes}
-                </p>
-              )}
-              <div className="btn-row">
-                <button type="button" className="btn btn-sm" onClick={handleInstallUpdate}>
-                  Installer et redémarrer
-                </button>
-              </div>
-            </>
-          )}
-          {updateState === 'downloading' && (
-            <p className="status-msg" style={{ marginTop: 6 }}>
-              Téléchargement{updateProgress != null ? ` : ${updateProgress} %` : '…'}
-            </p>
-          )}
-          {updateState === 'error' && updateError && (
-            <p className="status-msg err" style={{ marginTop: 6 }}>
-              {updateError}
-            </p>
-          )}
-        </section>
-      )}
     </div>
   )
 }
