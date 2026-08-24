@@ -16,6 +16,7 @@ dist-ssr
 .env
 
 # Clé de signature Tauri (mises à jour) — ne doit jamais être commitée
+.tauri/
 *.key
 *.key.pub
 *.key.password.txt

@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
-    "tauri:build": "tauri build"
+    "tauri:build": "tauri build",
+    "tauri:build:signed": "powershell -NoProfile -Command \"$env:TAURI_SIGNING_PRIVATE_KEY = Get-Content '.tauri/grand-livre-19.key' -Raw; $env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD = Get-Content '.tauri/grand-livre-19.key.password.txt' -Raw; npm run tauri:build\""
   },
   "dependencies": {
     "@tauri-apps/api": "^2.11.1",
