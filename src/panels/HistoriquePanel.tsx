@@ -173,62 +173,63 @@ export function HistoriquePanel({
 
   return (
     <section className="panel">
-      <h2 className="panel-title">Historique financier</h2>
+      <div className="label-row" style={{ marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
+        <h2 className="panel-title" style={{ margin: 0 }}>
+          Historique financier
+        </h2>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+          <div className="mini-toggle">
+            <button
+              type="button"
+              className={`mt-btn${mode === 'annee' ? ' active' : ''}`}
+              onClick={() => setMode('annee')}
+            >
+              Par année
+            </button>
+            <button
+              type="button"
+              className={`mt-btn${mode === 'mois' ? ' active' : ''}`}
+              onClick={() => setMode('mois')}
+            >
+              Par mois
+            </button>
+            <button
+              type="button"
+              className={`mt-btn${mode === 'date' ? ' active' : ''}`}
+              onClick={() => setMode('date')}
+            >
+              À une date précise
+            </button>
+          </div>
 
-      <div className="mini-toggle" style={{ width: 'fit-content', marginBottom: 20 }}>
-        <button
-          type="button"
-          className={`mt-btn${mode === 'annee' ? ' active' : ''}`}
-          onClick={() => setMode('annee')}
-        >
-          Par année
-        </button>
-        <button
-          type="button"
-          className={`mt-btn${mode === 'mois' ? ' active' : ''}`}
-          onClick={() => setMode('mois')}
-        >
-          Par mois
-        </button>
-        <button
-          type="button"
-          className={`mt-btn${mode === 'date' ? ' active' : ''}`}
-          onClick={() => setMode('date')}
-        >
-          À une date précise
-        </button>
+          {mode === 'annee' && (
+            <div className="field" style={{ flex: '0 0 auto', minWidth: 110 }}>
+              <select value={selectedYear} onChange={(e) => setYear(e.target.value)} aria-label="Année">
+                {years.map((y) => (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          {mode === 'mois' && (
+            <div className="field" style={{ flex: '0 0 auto', minWidth: 150 }}>
+              <input type="month" value={month} onChange={(e) => setMonth(e.target.value)} aria-label="Mois" />
+            </div>
+          )}
+          {mode === 'date' && (
+            <div className="field" style={{ flex: '0 0 auto', minWidth: 150 }}>
+              <input
+                type="date"
+                value={dateAsOf}
+                onChange={(e) => setDateAsOf(e.target.value)}
+                aria-label="Totaux cumulés jusqu'au"
+              />
+            </div>
+          )}
+        </div>
       </div>
-
-      {mode === 'annee' && (
-        <div className="form-row">
-          <div className="field" style={{ maxWidth: 200 }}>
-            <label>Année</label>
-            <select value={selectedYear} onChange={(e) => setYear(e.target.value)}>
-              {years.map((y) => (
-                <option key={y} value={y}>
-                  {y}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      )}
-      {mode === 'mois' && (
-        <div className="form-row">
-          <div className="field" style={{ maxWidth: 200 }}>
-            <label>Mois</label>
-            <input type="month" value={month} onChange={(e) => setMonth(e.target.value)} />
-          </div>
-        </div>
-      )}
-      {mode === 'date' && (
-        <div className="form-row">
-          <div className="field" style={{ maxWidth: 240 }}>
-            <label>Totaux cumulés jusqu'au</label>
-            <input type="date" value={dateAsOf} onChange={(e) => setDateAsOf(e.target.value)} />
-          </div>
-        </div>
-      )}
 
       <div className="cards">
         <div className="card income">
