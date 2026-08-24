@@ -181,7 +181,6 @@ table.ledger tr:hover td { background: var(--tint); }
 }
 
 a.file-link { color: var(--forest); font-weight: 600; text-decoration: underline; font-size: 13px; }
-.rate-note { font-size: 13px; color: var(--ink-soft); background: var(--paper); border-radius: var(--radius-md); padding: 10px 12px; margin-top: 14px; }
 
 /* Attente (factures non payées) */
 .attente-box { border: 1.5px solid var(--gold-soft); border-radius: var(--radius-lg); padding: 16px 18px; margin: 4px 0 22px; background: var(--paper); }

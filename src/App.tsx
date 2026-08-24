@@ -69,17 +69,23 @@ function App() {
           onManualSave={handleManualSave}
         />
         {restoreBanner === 'permission-needed' && (
-          <div className="rate-note" style={{ margin: '10px 0 0' }}>
-            Une sauvegarde automatique a été trouvée, mais le navigateur doit reconfirmer la
-            permission de la lire.{' '}
-            <button type="button" className="btn secondary btn-sm" onClick={handleGrantAndRestore}>
-              Charger la sauvegarde automatique
-            </button>
+          <div className="review-box" style={{ margin: '10px 0 0' }}>
+            <div className="rb-title">Sauvegarde automatique trouvée</div>
+            <p className="status-msg" style={{ margin: '0 0 10px' }}>
+              Une sauvegarde de tes données a été trouvée sur cet ordinateur. Confirme l'accès au
+              fichier pour la charger — cette confirmation est redemandée à chaque démarrage, par
+              mesure de sécurité.
+            </p>
+            <div className="btn-row">
+              <button type="button" className="btn secondary btn-sm" onClick={handleGrantAndRestore}>
+                Charger la sauvegarde automatique
+              </button>
+            </div>
           </div>
         )}
         {restoreBanner === 'busy' && (
-          <div className="rate-note" style={{ margin: '10px 0 0' }}>
-            Chargement de la sauvegarde automatique…
+          <div className="review-box" style={{ margin: '10px 0 0' }}>
+            <p className="status-msg" style={{ margin: 0 }}>Chargement de la sauvegarde automatique…</p>
           </div>
         )}
         <TabNav active={tab} onChange={setTab} />
