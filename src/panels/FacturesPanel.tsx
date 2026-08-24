@@ -125,100 +125,103 @@ export function FacturesPanel({ ledger, settings }: { ledger: Ledger; settings: 
         </div>
       </div>
 
-      <div
-        className={`upload-zone${dragOver ? ' dragover' : ''}`}
-        onDragOver={(e) => {
-          e.preventDefault()
-          setDragOver(true)
-        }}
-        onDragEnter={(e) => {
-          e.preventDefault()
-          setDragOver(true)
-        }}
-        onDragLeave={(e) => {
-          e.preventDefault()
-          setDragOver(false)
-        }}
-        onDrop={(e) => {
-          e.preventDefault()
-          setDragOver(false)
-          handleFile(e.dataTransfer.files[0] ?? null)
-        }}
-      >
-        <div className="icon">📄</div>
-        <p>Glisse un fichier ici ou choisis-le sur ton ordinateur (PDF, image, etc.)</p>
-        <div className="btn-row" style={{ justifyContent: 'center' }}>
-          <label className="btn secondary" style={{ cursor: 'pointer' }}>
-            📁 Choisir un fichier
-            <input
-              type="file"
-              style={{ display: 'none' }}
-              onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
-            />
-          </label>
-          {pendingFile && (
-            <button type="button" className="btn secondary" onClick={clearFile}>
-              Retirer le fichier
-            </button>
-          )}
+      <div className="review-box">
+        <div className="rb-title">Ajouter une facture</div>
+        <div
+          className={`upload-zone${dragOver ? ' dragover' : ''}`}
+          onDragOver={(e) => {
+            e.preventDefault()
+            setDragOver(true)
+          }}
+          onDragEnter={(e) => {
+            e.preventDefault()
+            setDragOver(true)
+          }}
+          onDragLeave={(e) => {
+            e.preventDefault()
+            setDragOver(false)
+          }}
+          onDrop={(e) => {
+            e.preventDefault()
+            setDragOver(false)
+            handleFile(e.dataTransfer.files[0] ?? null)
+          }}
+        >
+          <div className="icon">📄</div>
+          <p>Glisse un fichier ici ou choisis-le sur ton ordinateur (PDF, image, etc.)</p>
+          <div className="btn-row" style={{ justifyContent: 'center' }}>
+            <label className="btn secondary" style={{ cursor: 'pointer' }}>
+              📁 Choisir un fichier
+              <input
+                type="file"
+                style={{ display: 'none' }}
+                onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
+              />
+            </label>
+            {pendingFile && (
+              <button type="button" className="btn secondary" onClick={clearFile}>
+                Retirer le fichier
+              </button>
+            )}
+          </div>
         </div>
-      </div>
-      {fileStatus && <div className={`status-msg${fileStatus.err ? ' err' : ''}`}>{fileStatus.text}</div>}
+        {fileStatus && <div className={`status-msg${fileStatus.err ? ' err' : ''}`}>{fileStatus.text}</div>}
 
-      <div className="form-row">
-        <div className="field">
-          <label>Date de la facture</label>
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+        <div className="form-row">
+          <div className="field">
+            <label>Date de la facture</label>
+            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+          </div>
+          <div className="field">
+            <label>Type</label>
+            <select value={type} onChange={(e) => setType(e.target.value as InvoiceType)}>
+              <option value="Commission">Commission</option>
+              <option value="Taux horaire">Taux horaire</option>
+            </select>
+          </div>
+          <div className="field">
+            <label>Montant hors taxes ($)</label>
+            <input type="number" step="0.01" value={montant} onChange={(e) => handleMontantChange(e.target.value)} />
+          </div>
         </div>
-        <div className="field">
-          <label>Type</label>
-          <select value={type} onChange={(e) => setType(e.target.value as InvoiceType)}>
-            <option value="Commission">Commission</option>
-            <option value="Taux horaire">Taux horaire</option>
-          </select>
+        <div className="form-row">
+          <div className="field">
+            <label>TPS perçue ($)</label>
+            <input
+              type="number"
+              step="0.01"
+              value={settings.taxesInscrit ? tps : ''}
+              disabled={!settings.taxesInscrit}
+              onChange={(e) => setTps(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label>TVQ perçue ($)</label>
+            <input
+              type="number"
+              step="0.01"
+              value={settings.taxesInscrit ? tvq : ''}
+              disabled={!settings.taxesInscrit}
+              onChange={(e) => setTvq(e.target.value)}
+            />
+          </div>
         </div>
-        <div className="field">
-          <label>Montant hors taxes ($)</label>
-          <input type="number" step="0.01" value={montant} onChange={(e) => handleMontantChange(e.target.value)} />
+        {!settings.taxesInscrit && (
+          <p className="status-msg" style={{ marginTop: -8 }}>
+            Non inscrit aux fichiers de taxes (Paramètres ⚙️) — aucune TPS/TVQ à charger.
+          </p>
+        )}
+        {montantCentsPreview > 0 && (
+          <p className="status-msg" style={{ marginTop: -8 }}>
+            Total à facturer (taxes incluses) : <b className="mono">{formatCents(totalAvecTaxesPreview)}</b>
+          </p>
+        )}
+        {saveError && <div className="status-msg err">{saveError}</div>}
+        <div className="btn-row">
+          <button type="button" className="btn" onClick={handleSave}>
+            Enregistrer la facture
+          </button>
         </div>
-      </div>
-      <div className="form-row">
-        <div className="field">
-          <label>TPS perçue ($)</label>
-          <input
-            type="number"
-            step="0.01"
-            value={settings.taxesInscrit ? tps : ''}
-            disabled={!settings.taxesInscrit}
-            onChange={(e) => setTps(e.target.value)}
-          />
-        </div>
-        <div className="field">
-          <label>TVQ perçue ($)</label>
-          <input
-            type="number"
-            step="0.01"
-            value={settings.taxesInscrit ? tvq : ''}
-            disabled={!settings.taxesInscrit}
-            onChange={(e) => setTvq(e.target.value)}
-          />
-        </div>
-      </div>
-      {!settings.taxesInscrit && (
-        <p className="status-msg" style={{ marginTop: -8 }}>
-          Non inscrit aux fichiers de taxes (Paramètres ⚙️) — aucune TPS/TVQ à charger.
-        </p>
-      )}
-      {montantCentsPreview > 0 && (
-        <p className="status-msg" style={{ marginTop: -8 }}>
-          Total à facturer (taxes incluses) : <b className="mono">{formatCents(totalAvecTaxesPreview)}</b>
-        </p>
-      )}
-      {saveError && <div className="status-msg err">{saveError}</div>}
-      <div className="btn-row" style={{ marginBottom: 22 }}>
-        <button type="button" className="btn" onClick={handleSave}>
-          Enregistrer la facture
-        </button>
       </div>
 
       <div className="attente-box">

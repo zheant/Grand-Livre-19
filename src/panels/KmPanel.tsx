@@ -88,52 +88,55 @@ export function KmPanel({ ledger }: { ledger: Ledger }) {
         </div>
       </div>
 
-      <div className="form-row">
-        <div className="field">
-          <label>Date</label>
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+      <div className="review-box">
+        <div className="rb-title">Ajouter un déplacement</div>
+        <div className="form-row">
+          <div className="field">
+            <label>Date</label>
+            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+          </div>
+          <div className="field">
+            <label>Kilomètres</label>
+            <input type="number" step="0.1" value={km} onChange={(e) => setKm(e.target.value)} />
+          </div>
+          <div className="field" style={{ flex: 2 }}>
+            <label>Motif du déplacement</label>
+            <input
+              type="text"
+              placeholder="Ex : visite client, tournage 360 à Laval"
+              value={motif}
+              onChange={(e) => setMotif(e.target.value)}
+            />
+          </div>
         </div>
-        <div className="field">
-          <label>Kilomètres</label>
-          <input type="number" step="0.1" value={km} onChange={(e) => setKm(e.target.value)} />
+        <div className="btn-row" style={{ marginBottom: 8 }}>
+          <label className="btn secondary" style={{ cursor: 'pointer' }}>
+            📷 Photo du tableau de bord — avant
+            <input
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              onChange={(e) => handlePhoto(e.target.files?.[0] ?? null, 'before')}
+            />
+          </label>
+          <label className="btn secondary" style={{ cursor: 'pointer' }}>
+            📷 Photo du tableau de bord — après
+            <input
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              onChange={(e) => handlePhoto(e.target.files?.[0] ?? null, 'after')}
+            />
+          </label>
         </div>
-        <div className="field" style={{ flex: 2 }}>
-          <label>Motif du déplacement</label>
-          <input
-            type="text"
-            placeholder="Ex : visite client, tournage 360 à Laval"
-            value={motif}
-            onChange={(e) => setMotif(e.target.value)}
-          />
+        {photoStatus && <div className="status-msg">{photoStatus}</div>}
+        {photoError && <div className="status-msg err">{photoError}</div>}
+        {error && <div className="status-msg err">{error}</div>}
+        <div className="btn-row">
+          <button type="button" className="btn" onClick={handleSave}>
+            Ajouter le trajet
+          </button>
         </div>
-      </div>
-      <div className="btn-row" style={{ marginBottom: 8 }}>
-        <label className="btn secondary" style={{ cursor: 'pointer' }}>
-          📷 Photo du tableau de bord — avant
-          <input
-            type="file"
-            accept="image/*"
-            style={{ display: 'none' }}
-            onChange={(e) => handlePhoto(e.target.files?.[0] ?? null, 'before')}
-          />
-        </label>
-        <label className="btn secondary" style={{ cursor: 'pointer' }}>
-          📷 Photo du tableau de bord — après
-          <input
-            type="file"
-            accept="image/*"
-            style={{ display: 'none' }}
-            onChange={(e) => handlePhoto(e.target.files?.[0] ?? null, 'after')}
-          />
-        </label>
-      </div>
-      {photoStatus && <div className="status-msg">{photoStatus}</div>}
-      {photoError && <div className="status-msg err">{photoError}</div>}
-      {error && <div className="status-msg err">{error}</div>}
-      <div className="btn-row" style={{ marginBottom: 24 }}>
-        <button type="button" className="btn" onClick={handleSave}>
-          Ajouter le trajet
-        </button>
       </div>
 
       <div className="btn-row" style={{ marginBottom: 24 }}>
