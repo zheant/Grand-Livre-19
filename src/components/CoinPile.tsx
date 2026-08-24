@@ -2,8 +2,9 @@ import { formatCents } from '../lib/money'
 
 // Représentation « positionnelle » façon système décimal : chaque palier
 // vaut 10 fois le précédent, et le montant est décomposé comme on rendrait
-// la monnaie (le plus gros dénominateur d'abord). Le tas résultant peut donc
-// mélanger plusieurs matières à la fois — pas un seul palier actif.
+// la monnaie (le plus gros dénominateur d'abord). Chaque dénomination forme
+// une ou plusieurs colonnes (piles) de pièces empilées verticalement, max 5
+// de haut — au-delà, une nouvelle pile de la même matière démarre à côté.
 interface Denomination {
   valueDollars: number
   gradientId: string
@@ -19,6 +20,8 @@ const DENOMINATIONS: Denomination[] = [
   { valueDollars: 100_000, gradientId: 'tierRuby', stroke: '#5C0E22', gem: true },
 ]
 
+const MAX_STACK_HEIGHT = 5
+
 function decompose(totalDollars: number): number[] {
   let remaining = Math.max(0, Math.floor(totalDollars))
   const counts = new Array(DENOMINATIONS.length).fill(0)
@@ -29,57 +32,63 @@ function decompose(totalDollars: number): number[] {
   return counts
 }
 
-const CENTER_X = 110
-const BASE_Y = 158
-const ROW_HEIGHT = 22
-const COIN_SPACING = 22
-const MAX_PER_ROW = 9
-const RADIUS = 10
-
-interface Row {
-  cy: number
-  xs: number[]
+interface Stack {
+  count: number
   denom: Denomination
 }
 
-function buildRows(counts: number[]): Row[] {
-  const rows: Row[] = []
-  let level = 0
+function buildStacks(counts: number[]): Stack[] {
+  const stacks: Stack[] = []
   for (let d = 0; d < DENOMINATIONS.length; d++) {
     let remaining = counts[d]
     while (remaining > 0) {
-      const n = Math.min(MAX_PER_ROW, remaining)
-      const startX = CENTER_X - ((n - 1) * COIN_SPACING) / 2
-      rows.push({
-        cy: BASE_Y - level * ROW_HEIGHT,
-        xs: Array.from({ length: n }, (_, i) => startX + i * COIN_SPACING),
-        denom: DENOMINATIONS[d],
-      })
-      level += 1
+      const n = Math.min(MAX_STACK_HEIGHT, remaining)
+      stacks.push({ count: n, denom: DENOMINATIONS[d] })
       remaining -= n
     }
   }
-  return rows
+  return stacks
+}
+
+const CENTER_X = 150
+const BASE_Y = 132
+const COIN_THICKNESS = 7
+const RX = 12
+const RY = 5.5
+const SAME_GAP = 26
+const GROUP_GAP = 36
+
+function stackXs(stacks: Stack[]): number[] {
+  const xs: number[] = []
+  let x = 0
+  for (let i = 0; i < stacks.length; i++) {
+    if (i > 0) {
+      x += stacks[i].denom === stacks[i - 1].denom ? SAME_GAP : GROUP_GAP
+    }
+    xs.push(x)
+  }
+  const width = xs.length ? xs[xs.length - 1] : 0
+  const offset = CENTER_X - width / 2
+  return xs.map((v) => v + offset)
 }
 
 function gemPoints(cx: number, cy: number): string {
-  return [`${cx},${cy - RADIUS - 1}`, `${cx + RADIUS - 1},${cy - 1}`, `${cx},${cy + RADIUS}`, `${cx - RADIUS + 1},${cy - 1}`].join(
-    ' ',
-  )
+  return [`${cx},${cy - RY - 1}`, `${cx + RX},${cy}`, `${cx},${cy + RY + 1}`, `${cx - RX},${cy}`].join(' ')
 }
 
 export function CoinPile({ totalCents }: { totalCents: number }) {
   const totalDollars = Math.floor(Math.max(0, totalCents) / 100)
   const counts = decompose(totalDollars)
-  const rows = buildRows(counts)
+  const stacks = buildStacks(counts)
+  const xs = stackXs(stacks)
 
   return (
     <div>
       <svg
-        viewBox="0 0 220 190"
-        style={{ width: '100%', maxWidth: 240, height: 'auto', display: 'block', margin: '0 auto' }}
+        viewBox="0 0 300 170"
+        style={{ width: '100%', maxWidth: 280, height: 'auto', display: 'block', margin: '0 auto' }}
         role="img"
-        aria-label={`Tas de pièces et gemmes représentant ${formatCents(totalCents)} de revenus encaissés`}
+        aria-label={`Piles de pièces et gemmes représentant ${formatCents(totalCents)} de revenus encaissés`}
       >
         <defs>
           <radialGradient id="tierCopper" cx="35%" cy="30%" r="75%">
@@ -108,26 +117,28 @@ export function CoinPile({ totalCents }: { totalCents: number }) {
             <stop offset="100%" stopColor="#8B1032" />
           </linearGradient>
         </defs>
-        {rows.length > 0 && <ellipse cx={CENTER_X} cy={BASE_Y + 18} rx="92" ry="8" fill="rgba(0,0,0,0.12)" />}
-        {rows.map((row, ri) =>
-          row.xs.map((x, i) =>
-            row.denom.gem ? (
-              <g key={`${ri}-${i}`}>
-                <polygon
-                  points={gemPoints(x, row.cy)}
-                  fill={`url(#${row.denom.gradientId})`}
-                  stroke={row.denom.stroke}
-                  strokeWidth="1"
-                />
-                <line x1={x - RADIUS + 1} y1={row.cy - 1} x2={x + RADIUS - 1} y2={row.cy - 1} stroke={row.denom.stroke} strokeWidth="0.6" opacity="0.6" />
+        {stacks.length > 0 && (
+          <ellipse cx={CENTER_X} cy={BASE_Y + 14} rx={Math.max(60, (xs[xs.length - 1] ?? 0) - (xs[0] ?? 0) + 40) / 2} ry="7" fill="rgba(0,0,0,0.12)" />
+        )}
+        {stacks.map((stack, si) =>
+          Array.from({ length: stack.count }).map((_, ci) => {
+            const cx = xs[si]
+            const cy = BASE_Y - ci * COIN_THICKNESS
+            const isTop = ci === stack.count - 1
+            return stack.denom.gem ? (
+              <g key={`${si}-${ci}`}>
+                <polygon points={gemPoints(cx, cy)} fill={`url(#${stack.denom.gradientId})`} stroke={stack.denom.stroke} strokeWidth="1" />
+                {isTop && (
+                  <line x1={cx - RX + 2} y1={cy} x2={cx + RX - 2} y2={cy} stroke={stack.denom.stroke} strokeWidth="0.6" opacity="0.6" />
+                )}
               </g>
             ) : (
-              <g key={`${ri}-${i}`}>
-                <circle cx={x} cy={row.cy} r={RADIUS} fill={`url(#${row.denom.gradientId})`} stroke={row.denom.stroke} strokeWidth="1" />
-                <circle cx={x} cy={row.cy} r={RADIUS * 0.6} fill="none" stroke={row.denom.stroke} strokeOpacity="0.55" strokeWidth="0.8" />
+              <g key={`${si}-${ci}`}>
+                <ellipse cx={cx} cy={cy} rx={RX} ry={RY} fill={`url(#${stack.denom.gradientId})`} stroke={stack.denom.stroke} strokeWidth="1" />
+                {isTop && <ellipse cx={cx} cy={cy} rx={RX * 0.6} ry={RY * 0.55} fill="none" stroke={stack.denom.stroke} strokeOpacity="0.5" strokeWidth="0.8" />}
               </g>
-            ),
-          ),
+            )
+          }),
         )}
       </svg>
       <div
