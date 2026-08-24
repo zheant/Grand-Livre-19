@@ -4,6 +4,7 @@ import { saveBlobWithPicker } from '../lib/download'
 import { formatCents, formatKm, toCents } from '../lib/money'
 import { getTauxKmRepere } from '../lib/parametresFiscaux'
 import { importerSauvegarde, parseBackupFile, type BackupFile } from '../lib/backup'
+import { CoinPile } from '../components/CoinPile'
 import { ConfirmModal } from '../components/ConfirmModal'
 import type { useLedger } from '../hooks/useLedger'
 import type { useDocuments } from '../hooks/useDocuments'
@@ -132,6 +133,10 @@ export function HistoriquePanel({
 
   const selectedYear = years.includes(year) ? year : (years[0] ?? year)
 
+  const revenuPayeTousLesTemps = invoices
+    .filter((f) => f.statut === 'Payée')
+    .reduce((s, f) => s + f.montantCents, 0)
+
   const stats = useMemo(() => {
     if (mode === 'annee') {
       const invY = invoices.filter((f) => f.date.slice(0, 4) === selectedYear)
@@ -248,31 +253,36 @@ export function HistoriquePanel({
         </div>
       </div>
 
-      <h3
-        style={{ fontFamily: 'var(--font-heading)', fontSize: 16, color: 'var(--forest)', margin: '30px 0 10px' }}
-      >
-        Exporter les données
-      </h3>
-      <div className="form-row">
-        <div className="field" style={{ maxWidth: 200 }}>
-          <label>Du</label>
-          <input type="date" value={exportDebut} onChange={(e) => setExportDebut(e.target.value)} />
+      <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 20 }}>
+        <div className="review-box" style={{ flex: '1 1 280px', margin: 0 }}>
+          <div className="rb-title">Exporter les données</div>
+          <div className="form-row">
+            <div className="field" style={{ maxWidth: 200 }}>
+              <label>Du</label>
+              <input type="date" value={exportDebut} onChange={(e) => setExportDebut(e.target.value)} />
+            </div>
+            <div className="field" style={{ maxWidth: 200 }}>
+              <label>Au</label>
+              <input type="date" value={exportFin} onChange={(e) => setExportFin(e.target.value)} />
+            </div>
+          </div>
+          <div className="btn-row">
+            <button type="button" className="btn" disabled={exportState === 'busy'} onClick={handleExport}>
+              {exportState === 'busy' ? 'Préparation du fichier…' : '📦 Exporter les données'}
+            </button>
+          </div>
+          {exportState === 'error' && (
+            <p className="status-msg err">
+              L'export a échoué — réessaie, et si ça persiste, vérifie la console du navigateur.
+            </p>
+          )}
         </div>
-        <div className="field" style={{ maxWidth: 200 }}>
-          <label>Au</label>
-          <input type="date" value={exportFin} onChange={(e) => setExportFin(e.target.value)} />
+
+        <div className="review-box" style={{ flex: '1 1 220px', margin: 0 }}>
+          <div className="rb-title">Revenus encaissés (tous les temps)</div>
+          <CoinPile totalCents={revenuPayeTousLesTemps} />
         </div>
       </div>
-      <div className="btn-row" style={{ marginBottom: 8 }}>
-        <button type="button" className="btn" disabled={exportState === 'busy'} onClick={handleExport}>
-          {exportState === 'busy' ? 'Préparation du fichier…' : '📦 Exporter les données'}
-        </button>
-      </div>
-      {exportState === 'error' && (
-        <p className="status-msg err">
-          L'export a échoué — réessaie, et si ça persiste, vérifie la console du navigateur.
-        </p>
-      )}
 
       <h3
         style={{ fontFamily: 'var(--font-heading)', fontSize: 16, color: 'var(--forest)', margin: '30px 0 10px' }}
