@@ -224,6 +224,12 @@ a.file-link { color: var(--forest); font-weight: 600; text-decoration: underline
 }
 .settings-toggle:hover { background: rgba(35, 35, 42, 0.92); }
 
+.app-version {
+  position: fixed; bottom: 6px; right: 10px; z-index: 150;
+  font-family: var(--font-mono); font-size: 10px; color: var(--ink-soft); opacity: 0.55;
+  pointer-events: none; user-select: none;
+}
+
 .settings-section-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); font-weight: 700; margin-bottom: 12px; }
 
 .seuil-bar { height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; }

@@ -13,6 +13,7 @@ import { useLedger } from './hooks/useLedger'
 import { useDocuments } from './hooks/useDocuments'
 import { useSettings } from './hooks/useSettings'
 import { autoSaveOnClick, requestPermissionAndRestore, tryAutoRestoreOnStartup } from './lib/autoBackup'
+import { getAppVersion } from './lib/updater'
 import type { ContextId, TabId } from './types'
 
 const RELOAD_GUARD_KEY = 'livre-affaire-auto-restore-reloaded'
@@ -24,6 +25,11 @@ function App() {
   const ledger = useLedger(context)
   const documentsHook = useDocuments()
   const { settings, update: updateSettings } = useSettings()
+  const [appVersion, setAppVersion] = useState<string | null>(null)
+
+  useEffect(() => {
+    getAppVersion().then(setAppVersion)
+  }, [])
 
   async function handleContextChange(next: ContextId) {
     await ledger.saveAll() // s'assure que le contexte quitté est bien sauvegardé
@@ -60,6 +66,7 @@ function App() {
   return (
     <>
       <SettingsPanel settings={settings} onUpdate={updateSettings} />
+      {appVersion && <div className="app-version">v{appVersion}</div>}
       <div className="app">
         <Header context={context} userName={settings.userName} contextNames={settings.contextNames} />
         <ContextSwitcher
