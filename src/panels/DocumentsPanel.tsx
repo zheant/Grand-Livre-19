@@ -223,7 +223,7 @@ function DocumentDetail({
   onClose: () => void
 }) {
   const [blob, setBlob] = useState<Blob | null>(null)
-  const [openError, setOpenError] = useState(false)
+  const [openError, setOpenError] = useState<string | null>(null)
   useEffect(() => {
     let cancelled = false
     if (doc.hasFile) {
@@ -255,15 +255,17 @@ function DocumentDetail({
             className="file-link"
             style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
             onClick={() => {
-              setOpenError(false)
-              openFileExternally(blob, doc.fileName ?? 'document').catch(() => setOpenError(true))
+              setOpenError(null)
+              openFileExternally(blob, doc.fileName ?? 'document').catch((err) =>
+                setOpenError(err instanceof Error ? err.message : String(err)),
+              )
             }}
           >
             Ouvrir le fichier
           </button>
           {openError && (
             <span className="status-msg err" style={{ marginLeft: 8 }}>
-              Impossible d'ouvrir le fichier.
+              Impossible d'ouvrir le fichier : {openError}
             </span>
           )}
         </p>

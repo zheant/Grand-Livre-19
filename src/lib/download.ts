@@ -11,13 +11,17 @@ import { isTauriRuntime } from './updater'
 // avec l'application par défaut (visionneuse PDF, etc.).
 export async function openFileExternally(blob: Blob, fileName: string): Promise<void> {
   if (isTauriRuntime()) {
-    const { writeFile } = await import('@tauri-apps/plugin-fs')
+    const { writeFile, BaseDirectory } = await import('@tauri-apps/plugin-fs')
     const { openPath } = await import('@tauri-apps/plugin-opener')
     const { tempDir, join } = await import('@tauri-apps/api/path')
     const bytes = new Uint8Array(await blob.arrayBuffer())
     const safeName = `grand-livre-${Date.now()}-${fileName.replace(/[\\/:*?"<>|]/g, '_')}`
+    // Écrit via BaseDirectory.Temp (résolution interne à Tauri) plutôt que
+    // via un chemin absolu assemblé à la main — évite un chemin qui ne
+    // correspond pas exactement à ce que la portée `$TEMP` autorise (ex.
+    // forme courte 8.3 ou casse différente du chemin temp sur Windows).
+    await writeFile(safeName, bytes, { baseDir: BaseDirectory.Temp })
     const path = await join(await tempDir(), safeName)
-    await writeFile(path, bytes)
     await openPath(path)
     return
   }

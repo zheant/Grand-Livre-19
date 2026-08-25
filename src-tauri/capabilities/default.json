@@ -21,7 +21,7 @@
     },
     {
       "identifier": "fs:allow-write-file",
-      "allow": [{ "path": "$HOME/**" }]
+      "allow": [{ "path": "$HOME/**" }, { "path": "$TEMP/**" }]
     },
     {
       "identifier": "fs:allow-exists",

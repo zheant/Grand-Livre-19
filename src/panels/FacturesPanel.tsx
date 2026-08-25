@@ -383,7 +383,7 @@ function InvoiceDetail({
 }) {
   const [blob, setBlob] = useState<Blob | null>(null)
   const [editing, setEditing] = useState(false)
-  const [openError, setOpenError] = useState(false)
+  const [openError, setOpenError] = useState<string | null>(null)
   useEffect(() => {
     let cancelled = false
     if (invoice.hasFile) {
@@ -433,15 +433,17 @@ function InvoiceDetail({
             className="file-link"
             style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
             onClick={() => {
-              setOpenError(false)
-              openFileExternally(blob, invoice.fileName ?? 'facture').catch(() => setOpenError(true))
+              setOpenError(null)
+              openFileExternally(blob, invoice.fileName ?? 'facture').catch((err) =>
+                setOpenError(err instanceof Error ? err.message : String(err)),
+              )
             }}
           >
             Ouvrir le fichier
           </button>
           {openError && (
             <span className="status-msg err" style={{ marginLeft: 8 }}>
-              Impossible d'ouvrir le fichier.
+              Impossible d'ouvrir le fichier : {openError}
             </span>
           )}
         </p>
