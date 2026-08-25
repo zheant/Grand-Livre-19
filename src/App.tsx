@@ -51,9 +51,17 @@ function App() {
       const appWindow = getCurrentWindow()
       const fn = await appWindow.onCloseRequested(async (event) => {
         event.preventDefault()
-        await ledgerRef.current.saveAll()
-        await saveBackupOnClose()
-        await appWindow.destroy()
+        try {
+          await ledgerRef.current.saveAll()
+          await saveBackupOnClose()
+        } catch (err) {
+          // La fenêtre doit se fermer même si la sauvegarde échoue — mieux
+          // vaut perdre les toutes dernières secondes de données que de
+          // laisser l'appli bloquée, impossible à fermer avec le X.
+          console.error('Sauvegarde à la fermeture échouée', err)
+        } finally {
+          await appWindow.destroy()
+        }
       })
       if (cancelled) fn()
       else unlisten = fn
