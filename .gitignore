@@ -21,8 +21,9 @@ dist-ssr
 *.key.pub
 *.key.password.txt
 
-# Claude Code local settings (machine-specific permissions)
+# Claude Code local settings (machine-specific permissions) and session state
 .claude/settings.local.json
+.claude/scheduled_tasks.lock
 
 # Editor directories and files
 .vscode/*
