@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { AppSettings } from '../hooks/useSettings'
+import { openFileExternally } from '../lib/download'
 import { formatCents } from '../lib/money'
 import { getParametresFiscauxAvecRepli } from '../lib/parametresFiscaux'
 import { uid } from '../lib/uid'
@@ -382,6 +383,7 @@ function InvoiceDetail({
 }) {
   const [blob, setBlob] = useState<Blob | null>(null)
   const [editing, setEditing] = useState(false)
+  const [openError, setOpenError] = useState(false)
   useEffect(() => {
     let cancelled = false
     if (invoice.hasFile) {
@@ -424,11 +426,24 @@ function InvoiceDetail({
         )}
         <DetailRow label="Fichier" value={invoice.fileName ?? '—'} />
       </div>
-      {fileUrl && !isImage && (
+      {blob && !isImage && (
         <p style={{ marginTop: 14 }}>
-          <a className="file-link" href={fileUrl} target="_blank" rel="noopener noreferrer">
-            Ouvrir le fichier dans un nouvel onglet
-          </a>
+          <button
+            type="button"
+            className="file-link"
+            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+            onClick={() => {
+              setOpenError(false)
+              openFileExternally(blob, invoice.fileName ?? 'facture').catch(() => setOpenError(true))
+            }}
+          >
+            Ouvrir le fichier
+          </button>
+          {openError && (
+            <span className="status-msg err" style={{ marginLeft: 8 }}>
+              Impossible d'ouvrir le fichier.
+            </span>
+          )}
         </p>
       )}
       {!fileUrl && invoice.fileName && !invoice.hasFile && (

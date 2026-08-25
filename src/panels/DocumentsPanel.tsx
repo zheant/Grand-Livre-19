@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { openFileExternally } from '../lib/download'
 import { TAILLE_MAX_FICHIER } from '../hooks/useLedger'
 import { useBlobUrl } from '../hooks/useBlobUrl'
 import { useListToggle } from '../hooks/useListToggle'
@@ -222,6 +223,7 @@ function DocumentDetail({
   onClose: () => void
 }) {
   const [blob, setBlob] = useState<Blob | null>(null)
+  const [openError, setOpenError] = useState(false)
   useEffect(() => {
     let cancelled = false
     if (doc.hasFile) {
@@ -246,11 +248,24 @@ function DocumentDetail({
         <DetailRow label="Description" value={doc.description || '—'} />
         <DetailRow label="Fichier" value={doc.fileName ?? '—'} />
       </div>
-      {fileUrl && !isImage && (
+      {blob && !isImage && (
         <p style={{ marginTop: 14 }}>
-          <a className="file-link" href={fileUrl} target="_blank" rel="noopener noreferrer">
-            Ouvrir le fichier dans un nouvel onglet
-          </a>
+          <button
+            type="button"
+            className="file-link"
+            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+            onClick={() => {
+              setOpenError(false)
+              openFileExternally(blob, doc.fileName ?? 'document').catch(() => setOpenError(true))
+            }}
+          >
+            Ouvrir le fichier
+          </button>
+          {openError && (
+            <span className="status-msg err" style={{ marginLeft: 8 }}>
+              Impossible d'ouvrir le fichier.
+            </span>
+          )}
         </p>
       )}
       {!fileUrl && doc.fileName && !doc.hasFile && (

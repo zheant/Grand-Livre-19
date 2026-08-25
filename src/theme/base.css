@@ -109,7 +109,7 @@ table.ledger th {
 table.ledger td { padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
 table.ledger tr:hover td { background: var(--tint); }
 .mono { font-family: var(--font-mono); }
-.num { text-align: right; }
+.num { text-align: left; }
 .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: var(--radius-pill); font-weight: 600; }
 .tag.envoyee { background: var(--tag-a-bg); color: var(--tag-a-fg); }
 .tag.payee { background: var(--tag-b-bg); color: var(--tag-b-fg); }

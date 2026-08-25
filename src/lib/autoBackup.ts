@@ -159,9 +159,14 @@ async function clearStoredBackupPath(): Promise<void> {
   await storage.delete(BACKUP_PATH_KEY)
 }
 
+async function writeBackupToPath(path: string): Promise<void> {
+  const { writeTextFile } = await import('@tauri-apps/plugin-fs')
+  const backup = await exporterSauvegarde(storage)
+  await writeTextFile(path, JSON.stringify(backup))
+}
+
 async function autoSaveOnClickTauri(): Promise<AutoSaveResult> {
   try {
-    const { writeTextFile } = await import('@tauri-apps/plugin-fs')
     let path = await getStoredBackupPath()
     if (!path) {
       const { save } = await import('@tauri-apps/plugin-dialog')
@@ -173,12 +178,25 @@ async function autoSaveOnClickTauri(): Promise<AutoSaveResult> {
       path = chosen
       await setStoredBackupPath(path)
     }
-    const backup = await exporterSauvegarde(storage)
-    await writeTextFile(path, JSON.stringify(backup))
+    await writeBackupToPath(path)
     return 'saved'
   } catch (err) {
     console.error('Sauvegarde automatique échouée', err)
     return 'error'
+  }
+}
+
+// Sauvegarde silencieuse à la fermeture de l'appli — jamais de boîte de
+// dialogue ici (un sélecteur de fichier surgissant pendant la fermeture
+// serait déroutant) : si aucun emplacement n'a encore été choisi via le
+// bouton Enregistrer, on ne fait simplement rien.
+async function saveBackupOnCloseTauri(): Promise<void> {
+  try {
+    const path = await getStoredBackupPath()
+    if (!path) return
+    await writeBackupToPath(path)
+  } catch (err) {
+    console.error('Sauvegarde à la fermeture échouée', err)
   }
 }
 
@@ -211,6 +229,13 @@ export async function autoSaveOnClick(): Promise<AutoSaveResult> {
 // Tenté silencieusement à l'ouverture de l'appli.
 export async function tryAutoRestoreOnStartup(): Promise<AutoRestoreResult> {
   return isTauriRuntime() ? tryAutoRestoreOnStartupTauri() : tryAutoRestoreOnStartupWeb()
+}
+
+// Appelé à la fermeture de la fenêtre (voir App.tsx) — no-op hors Tauri ou
+// si aucun emplacement de sauvegarde n'a encore été établi.
+export async function saveBackupOnClose(): Promise<void> {
+  if (!isTauriRuntime()) return
+  await saveBackupOnCloseTauri()
 }
 
 export async function forgetAutoBackupFile(): Promise<void> {

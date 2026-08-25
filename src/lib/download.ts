@@ -1,6 +1,30 @@
 // Déclenche le téléchargement d'un fichier généré côté client — aucune
 // dépendance serveur, tout reste local.
 
+import { isTauriRuntime } from './updater'
+
+// Ouvre un fichier (reçu, PDF de facture, etc.) dans une visionneuse externe.
+// Sous Tauri, un lien <a target="_blank"> vers une blob: URL ne fait rien —
+// la webview n'a pas de notion d'« onglet », et une blob: URL n'est de toute
+// façon valide que dans le contexte qui l'a créée. On écrit donc une copie
+// temporaire du fichier sur disque puis on demande au système de l'ouvrir
+// avec l'application par défaut (visionneuse PDF, etc.).
+export async function openFileExternally(blob: Blob, fileName: string): Promise<void> {
+  if (isTauriRuntime()) {
+    const { writeFile } = await import('@tauri-apps/plugin-fs')
+    const { openPath } = await import('@tauri-apps/plugin-opener')
+    const { tempDir, join } = await import('@tauri-apps/api/path')
+    const bytes = new Uint8Array(await blob.arrayBuffer())
+    const safeName = `grand-livre-${Date.now()}-${fileName.replace(/[\\/:*?"<>|]/g, '_')}`
+    const path = await join(await tempDir(), safeName)
+    await writeFile(path, bytes)
+    await openPath(path)
+    return
+  }
+  const url = URL.createObjectURL(blob)
+  window.open(url, '_blank', 'noopener,noreferrer')
+}
+
 export function downloadBlob(filename: string, blob: Blob): void {
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')

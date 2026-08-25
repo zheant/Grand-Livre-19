@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Header } from './components/Header'
 import { ContextSwitcher } from './components/ContextSwitcher'
 import { SettingsPanel } from './components/SettingsPanel'
@@ -12,8 +12,8 @@ import { HistoriquePanel } from './panels/HistoriquePanel'
 import { useLedger } from './hooks/useLedger'
 import { useDocuments } from './hooks/useDocuments'
 import { useSettings } from './hooks/useSettings'
-import { autoSaveOnClick, requestPermissionAndRestore, tryAutoRestoreOnStartup } from './lib/autoBackup'
-import { getAppVersion } from './lib/updater'
+import { autoSaveOnClick, requestPermissionAndRestore, saveBackupOnClose, tryAutoRestoreOnStartup } from './lib/autoBackup'
+import { getAppVersion, isTauriRuntime } from './lib/updater'
 import type { ContextId, TabId } from './types'
 
 const RELOAD_GUARD_KEY = 'livre-affaire-auto-restore-reloaded'
@@ -29,6 +29,39 @@ function App() {
 
   useEffect(() => {
     getAppVersion().then(setAppVersion)
+  }, [])
+
+  // Toujours le ledger du contexte actuellement affiché — lu par le
+  // gestionnaire de fermeture ci-dessous (enregistré une seule fois au
+  // montage) pour éviter de sauvegarder un contexte périmé après un
+  // changement d'onglet Géo360/Manutention.
+  const ledgerRef = useRef(ledger)
+  useEffect(() => {
+    ledgerRef.current = ledger
+  })
+
+  // Sauvegarde silencieuse dans le fichier de sauvegarde auto (s'il y en a
+  // un) à la fermeture de la fenêtre — voir lib/autoBackup.ts.
+  useEffect(() => {
+    if (!isTauriRuntime()) return
+    let unlisten: (() => void) | undefined
+    let cancelled = false
+    ;(async () => {
+      const { getCurrentWindow } = await import('@tauri-apps/api/window')
+      const appWindow = getCurrentWindow()
+      const fn = await appWindow.onCloseRequested(async (event) => {
+        event.preventDefault()
+        await ledgerRef.current.saveAll()
+        await saveBackupOnClose()
+        await appWindow.destroy()
+      })
+      if (cancelled) fn()
+      else unlisten = fn
+    })()
+    return () => {
+      cancelled = true
+      unlisten?.()
+    }
   }, [])
 
   async function handleContextChange(next: ContextId) {
