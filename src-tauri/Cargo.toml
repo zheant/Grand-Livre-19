@@ -1,6 +1,6 @@
 [package]
 name = "livre-affaire"
-version = "0.5.1"
+version = "0.5.2"
 description = "Livre d'affaire — suivi de revenus, dépenses et kilométrage pour travailleur autonome"
 authors = []
 license = ""

@@ -52,12 +52,19 @@ function App() {
       const fn = await appWindow.onCloseRequested(async (event) => {
         event.preventDefault()
         try {
-          await ledgerRef.current.saveAll()
-          await saveBackupOnClose()
+          // Filet de sécurité en plus du try/catch : si la sauvegarde reste
+          // en attente (ex. IndexedDB qui bloque pendant la fermeture de la
+          // fenêtre) plutôt que d'échouer proprement, un catch seul ne
+          // suffit pas — le timeout garantit que la fenêtre se ferme quand
+          // même après 3 s, plutôt que de rester coincée indéfiniment.
+          await Promise.race([
+            (async () => {
+              await ledgerRef.current.saveAll()
+              await saveBackupOnClose()
+            })(),
+            new Promise((resolve) => setTimeout(resolve, 3000)),
+          ])
         } catch (err) {
-          // La fenêtre doit se fermer même si la sauvegarde échoue — mieux
-          // vaut perdre les toutes dernières secondes de données que de
-          // laisser l'appli bloquée, impossible à fermer avec le X.
           console.error('Sauvegarde à la fermeture échouée', err)
         } finally {
           await appWindow.destroy()
