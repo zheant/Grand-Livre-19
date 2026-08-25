@@ -16,8 +16,8 @@
   --ink-soft: #9c8fb5;
   --gold: #ffd23f;
   --gold-soft: #ffe18a;
-  --forest: #ff2daf;
-  --forest-2: #d6199a;
+  --forest: #d43f9c;
+  --forest-2: #ad3380;
   --rust: #ff5d5d;
   --moss: #23e5db;
   --line: #3a2c52;
@@ -275,9 +275,9 @@
   --ink-soft: #8fae9b;
   --gold: #d4af37;
   --gold-soft: #e3c468;
-  --forest: #c41e3a;
-  --forest-2: #a8172e;
-  --rust: #e2453f;
+  --forest: #8f2d3a;
+  --forest-2: #6e222c;
+  --rust: #b8453f;
   --moss: #3fa66b;
   --line: rgba(240, 230, 210, 0.3);
   --card: #094b2f;
@@ -618,14 +618,36 @@
   --panel-radius: 18px;
 }
 
+/* Fond entièrement en dégradés CSS (pas de SVG en data-URI) : plus fiable
+   à obtenir juste du premier coup — trois nébuleuses en aplats larges,
+   trois planètes ombrées (sphère blanche → couleur → transparent), puis un
+   champ d'étoiles qui se répète en tuile. */
 :root[data-theme='cosmos'] body {
   background-color: var(--paper);
   background-image:
     radial-gradient(circle at 15% -10%, rgba(124, 77, 255, 0.28), transparent 45%),
     radial-gradient(circle at 90% 0%, rgba(94, 230, 255, 0.18), transparent 40%),
     radial-gradient(circle at 50% 100%, rgba(255, 92, 138, 0.12), transparent 45%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Ccircle cx='250' cy='60' r='14' fill='rgba(124,77,255,0.1)'/%3E%3Ccircle cx='60' cy='80' r='10' fill='rgba(124,77,255,0.18)'/%3E%3Ccircle cx='57' cy='77' r='4' fill='rgba(124,77,255,0.35)'/%3E%3Ccircle cx='320' cy='150' r='6' fill='rgba(94,230,255,0.16)'/%3E%3Ccircle cx='318' cy='148' r='2.5' fill='rgba(94,230,255,0.3)'/%3E%3Cellipse cx='180' cy='300' rx='14' ry='4' fill='none' stroke='rgba(255,92,138,0.2)' stroke-width='1.2' transform='rotate(-20 180 300)'/%3E%3Ccircle cx='180' cy='300' r='7' fill='rgba(255,92,138,0.16)'/%3E%3Ccircle cx='177' cy='297' r='3' fill='rgba(255,92,138,0.3)'/%3E%3Ccircle cx='370' cy='340' r='4' fill='rgba(77,255,184,0.16)'/%3E%3Ccircle cx='15' cy='140' r='1' fill='rgba(255,255,255,0.8)'/%3E%3Ccircle cx='95' cy='25' r='1.3' fill='rgba(255,255,255,0.6)'/%3E%3Ccircle cx='140' cy='190' r='0.9' fill='rgba(255,255,255,0.7)'/%3E%3Ccircle cx='230' cy='260' r='1.2' fill='rgba(94,230,255,0.7)'/%3E%3Ccircle cx='305' cy='60' r='0.8' fill='rgba(255,255,255,0.6)'/%3E%3Ccircle cx='390' cy='110' r='1.1' fill='rgba(255,255,255,0.8)'/%3E%3Ccircle cx='40' cy='340' r='1' fill='rgba(255,255,255,0.55)'/%3E%3Ccircle cx='160' cy='380' r='1.4' fill='rgba(255,92,138,0.55)'/%3E%3Ccircle cx='280' cy='340' r='0.9' fill='rgba(255,255,255,0.7)'/%3E%3Ccircle cx='360' cy='220' r='1.2' fill='rgba(255,255,255,0.6)'/%3E%3Ccircle cx='10' cy='240' r='0.7' fill='rgba(255,255,255,0.5)'/%3E%3Ccircle cx='210' cy='150' r='1' fill='rgba(94,230,255,0.6)'/%3E%3C/svg%3E");
-  background-repeat: no-repeat, no-repeat, no-repeat, repeat;
+    radial-gradient(circle at 12% 78%, rgba(255, 255, 255, 0.9) 0%, rgba(124, 77, 255, 0.85) 6%, rgba(124, 77, 255, 0.15) 55%, transparent 58%),
+    radial-gradient(circle at 85% 60%, rgba(255, 255, 255, 0.85) 0%, rgba(94, 230, 255, 0.8) 5%, rgba(94, 230, 255, 0.12) 50%, transparent 53%),
+    radial-gradient(circle at 68% 14%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 92, 138, 0.75) 4%, rgba(255, 92, 138, 0.1) 45%, transparent 48%),
+    radial-gradient(1.4px 1.4px at 8% 12%, rgba(255, 255, 255, 0.9), transparent 100%),
+    radial-gradient(1px 1px at 24% 38%, rgba(255, 255, 255, 0.7), transparent 100%),
+    radial-gradient(1.6px 1.6px at 40% 8%, rgba(94, 230, 255, 0.8), transparent 100%),
+    radial-gradient(1px 1px at 55% 55%, rgba(255, 255, 255, 0.6), transparent 100%),
+    radial-gradient(1.3px 1.3px at 70% 22%, rgba(255, 255, 255, 0.8), transparent 100%),
+    radial-gradient(1px 1px at 85% 45%, rgba(255, 92, 138, 0.6), transparent 100%),
+    radial-gradient(1.5px 1.5px at 92% 78%, rgba(255, 255, 255, 0.7), transparent 100%),
+    radial-gradient(1px 1px at 15% 85%, rgba(255, 255, 255, 0.5), transparent 100%),
+    radial-gradient(1.2px 1.2px at 33% 68%, rgba(94, 230, 255, 0.6), transparent 100%),
+    radial-gradient(1px 1px at 60% 90%, rgba(255, 255, 255, 0.6), transparent 100%);
+  background-repeat:
+    no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat,
+    repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat;
+  background-size:
+    auto, auto, auto, auto, auto, auto,
+    240px 200px, 240px 200px, 240px 200px, 240px 200px, 240px 200px,
+    240px 200px, 240px 200px, 240px 200px, 240px 200px, 240px 200px;
   background-attachment: fixed;
 }
 
@@ -659,80 +681,82 @@
 }
 
 /* ---------------------------------------------------------------------- */
-/* Terminal rétro                                                          */
+/* Zaza                                                                     */
 /* ---------------------------------------------------------------------- */
-:root[data-theme='terminal'] {
-  --paper: #050805;
-  --paper-2: #0A100A;
-  --ink: #33FF66;
-  --ink-soft: #1FAE45;
-  --gold: #B6FFB0;
-  --gold-soft: #7CFF9E;
-  --forest: #00CC55;
-  --forest-2: #00A844;
-  --rust: #FF3355;
-  --moss: #4CFF7A;
-  --line: #0F3D1E;
-  --card: #030503;
-  --shadow: 0 0 0 1px rgba(51, 255, 102, 0.15), 0 0 24px rgba(51, 255, 102, 0.08);
-  --on-accent: #020503;
+:root[data-theme='zaza'] {
+  --paper: #172A17;
+  --paper-2: #14231A;
+  --ink: #E8F5E0;
+  --ink-soft: #9BBF9B;
+  --gold: #C9A9E9;
+  --gold-soft: #E0C9F5;
+  --forest: #4CAF50;
+  --forest-2: #388E3C;
+  --rust: #E57373;
+  --moss: #7CB342;
+  --line: #2E4A2E;
+  --card: #1D331D;
+  --shadow: 0 2px 20px rgba(76, 175, 80, 0.15);
+  --on-accent: #0D1F0D;
 
-  --tag-a-bg: rgba(51, 255, 102, 0.15);
-  --tag-a-fg: #33FF66;
-  --tag-b-bg: rgba(182, 255, 176, 0.15);
-  --tag-b-fg: #B6FFB0;
-  --tint: rgba(51, 255, 102, 0.06);
-  --hover-bg: #0A1A0D;
-  --dragover-bg: rgba(51, 255, 102, 0.12);
-  --overlay: rgba(0, 5, 0, 0.85);
+  --tag-a-bg: rgba(201, 169, 233, 0.18);
+  --tag-a-fg: #C9A9E9;
+  --tag-b-bg: rgba(124, 179, 66, 0.2);
+  --tag-b-fg: #7CB342;
+  --tint: rgba(76, 175, 80, 0.06);
+  --hover-bg: #223A22;
+  --dragover-bg: rgba(76, 175, 80, 0.12);
+  --overlay: rgba(8, 16, 8, 0.7);
 
-  --font-heading: 'VT323', monospace;
-  --font-mono: 'Share Tech Mono', monospace;
-  --heading-transform: uppercase;
-  --heading-tracking: 1.5px;
+  --font-heading: 'Permanent Marker', cursive;
+  --heading-transform: none;
+  --heading-tracking: 0.5px;
 
-  --radius-lg: 3px;
-  --radius-md: 2px;
-  --radius-xl: 3px;
-  --radius-pill: 3px;
-  --radius-tab: 2px 2px 0 0;
-  --panel-radius: 2px;
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --radius-xl: 18px;
+  --radius-pill: 22px;
+  --radius-tab: 12px 12px 0 0;
+  --panel-radius: 20px;
 }
 
-:root[data-theme='terminal'] body {
+:root[data-theme='zaza'] body {
   background-color: var(--paper);
-  background-image:
-    repeating-linear-gradient(0deg, rgba(51, 255, 102, 0.05) 0px, rgba(51, 255, 102, 0.05) 1px, transparent 1px, transparent 3px),
-    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.45) 100%);
+  /* Feuilles semées en filigrane — réutilise l'emoji 🌿 (herbe), le seul
+     symbole « feuille » fiable à travers les polices système ; l'opacité se
+     règle via l'attribut SVG opacity plutôt que fill, qui n'a pas d'effet
+     sur un glyphe emoji en couleur. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ctext x='8' y='45' font-family='sans-serif' font-size='30' opacity='0.09'%3E%F0%9F%8C%BF%3C/text%3E%3Ctext x='54' y='90' font-family='sans-serif' font-size='30' opacity='0.09'%3E%F0%9F%8C%BF%3C/text%3E%3C/svg%3E");
+  background-size: 100px 100px;
+  background-repeat: repeat;
   background-attachment: fixed;
 }
 
-:root[data-theme='terminal'] nav.tabs button,
-:root[data-theme='terminal'] .ctx-btn,
-:root[data-theme='terminal'] .btn {
+:root[data-theme='zaza'] nav.tabs button,
+:root[data-theme='zaza'] .ctx-btn,
+:root[data-theme='zaza'] .btn {
   font-family: var(--font-heading);
-  font-size: 16px;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
 }
 
-:root[data-theme='terminal'] h2.panel-title::before {
-  content: '> ';
-  color: var(--forest);
+:root[data-theme='zaza'] nav.tabs button {
+  border: none;
+  background: transparent;
+  top: 0;
 }
 
-@keyframes terminal-blink {
-  50% { opacity: 0; }
+:root[data-theme='zaza'] nav.tabs button.active {
+  border-bottom: 2px solid var(--forest);
+  box-shadow: none;
 }
 
-:root[data-theme='terminal'] h2.panel-title::after {
-  content: '_';
-  margin-left: 3px;
-  color: var(--forest);
-  animation: terminal-blink 1s step-start infinite;
+:root[data-theme='zaza'] h2.panel-title::before {
+  content: '\1F33F';
+  margin-right: 8px;
+  font-size: 0.8em;
+  vertical-align: middle;
 }
 
-:root[data-theme='terminal'] .card,
-:root[data-theme='terminal'] section.panel,
-:root[data-theme='terminal'] .modal-box {
-  border-color: var(--forest-2);
+:root[data-theme='zaza'] .reserve-box {
+  box-shadow: 0 0 24px rgba(76, 175, 80, 0.25) inset;
 }

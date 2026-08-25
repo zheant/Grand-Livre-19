@@ -8,7 +8,7 @@ export type ThemeId =
   | 'natural'
   | 'quebec'
   | 'cosmos'
-  | 'terminal'
+  | 'zaza'
 
 const STORAGE_KEY = 'livre-affaire-theme'
 
@@ -22,7 +22,7 @@ export const THEMES: { id: ThemeId; label: string }[] = [
   { id: 'natural', label: 'Naturel' },
   { id: 'quebec', label: 'Québec indépendant' },
   { id: 'cosmos', label: 'Cosmos' },
-  { id: 'terminal', label: 'Terminal rétro' },
+  { id: 'zaza', label: 'Zaza' },
 ]
 
 export function getStoredTheme(): ThemeId {
