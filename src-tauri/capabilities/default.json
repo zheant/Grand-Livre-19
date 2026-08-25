@@ -11,6 +11,7 @@
     "process:default",
     "dialog:default",
     "opener:default",
+    "opener:allow-open-path",
     {
       "identifier": "fs:allow-read-text-file",
       "allow": [{ "path": "$HOME/**" }]
