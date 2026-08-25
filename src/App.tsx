@@ -67,7 +67,11 @@ function App() {
         } catch (err) {
           console.error('Sauvegarde à la fermeture échouée', err)
         } finally {
-          await appWindow.destroy()
+          try {
+            await appWindow.destroy()
+          } catch (err) {
+            console.error('Fermeture de la fenêtre échouée', err)
+          }
         }
       })
       if (cancelled) fn()
