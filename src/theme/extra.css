@@ -275,9 +275,9 @@
   --ink-soft: #8fae9b;
   --gold: #d4af37;
   --gold-soft: #e3c468;
-  --forest: #8f2d3a;
-  --forest-2: #6e222c;
-  --rust: #b8453f;
+  --forest: #c1615a;
+  --forest-2: #a44f48;
+  --rust: #c8584f;
   --moss: #3fa66b;
   --line: rgba(240, 230, 210, 0.3);
   --card: #094b2f;
@@ -722,11 +722,12 @@
 
 :root[data-theme='zaza'] body {
   background-color: var(--paper);
-  /* Feuilles semées en filigrane — réutilise l'emoji 🌿 (herbe), le seul
-     symbole « feuille » fiable à travers les polices système ; l'opacité se
-     règle via l'attribut SVG opacity plutôt que fill, qui n'a pas d'effet
-     sur un glyphe emoji en couleur. */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ctext x='8' y='45' font-family='sans-serif' font-size='30' opacity='0.09'%3E%F0%9F%8C%BF%3C/text%3E%3Ctext x='54' y='90' font-family='sans-serif' font-size='30' opacity='0.09'%3E%F0%9F%8C%BF%3C/text%3E%3C/svg%3E");
+  /* Feuilles et flammes en alternance, semées en filigrane. La feuille
+     réutilise l'emoji 🌿 (opacité réglée via l'attribut SVG opacity, sans
+     effet sur fill pour un glyphe emoji en couleur) ; la flamme est un
+     tracé dessiné à la main plutôt que 🔥, pour pouvoir la teindre exactement
+     dans le même vert que les feuilles via fill. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ctext x='8' y='45' font-family='sans-serif' font-size='30' opacity='0.09'%3E%F0%9F%8C%BF%3C/text%3E%3Cg transform='translate(54,84)'%3E%3Cpath d='M0,-13 C-5,-6 -7,-1 -7,3 C-7,7.5 -3.9,11 0,11 C3.9,11 7,7.5 7,3 C7,-1 5,-6 0,-13 Z' fill='rgba(76,175,80,0.09)'/%3E%3C/g%3E%3C/svg%3E");
   background-size: 100px 100px;
   background-repeat: repeat;
   background-attachment: fixed;
